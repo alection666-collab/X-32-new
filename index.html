@@ -444,7 +444,7 @@ function drawEqCurve(s){let path=document.getElementById('eqCurvePath'),dots=doc
 function setChannelSend(i,k,v){let all=sendState(),x=all[selected][i];if(k==='level'){x.level=Number(v);let o=document.getElementById('sendout'+i);if(o)o.textContent=x.level.toFixed(1)+' dB'}else if(k==='mode')x.pre=v==='pre';else x.on=!x.on;saveSendState(all);if(k!=='level')renderChannelPage()}
 function setEq(i,k,v,id){let n=Number(v);currentChannelState().eq[i][k]=n;saveChannelState();document.getElementById(id).textContent=k==='freq'?n+' Hz':k==='gain'?n+' dB':n;drawEqCurve(currentChannelState())}
 function toggleEqBand(i){let s=currentChannelState();s.eq[i].on=!s.eq[i].on;saveChannelState();renderChannelPage()}
-function resetChannel(){channelState[selected]=channelDefaults();saveChannelState();renderChannelPage();toast('Параметры канала сброшены')}
+function resetChannel(){if(!window.confirm('Вы уверены?\nВсе настройки текущего канала будут сброшены.'))return;channelState[selected]=channelDefaults();saveChannelState();renderChannelPage();toast('Параметры канала сброшены')}
 
 function showSection(s,btn){
  const panels={mixer:'mixerView',channel:'channelPanel',bus:'busPanel',fx:'fxPanel',routing:'routingPanel',scenes:'scenesPanel',meters:'metersPanel',monitor:'monitorPanel'};
