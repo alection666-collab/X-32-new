@@ -65,6 +65,10 @@ input.fader::-webkit-slider-thumb{width:31px;height:43px;margin-top:-20px;border
 @media(max-width:899px) and (min-width:651px){.channels{grid-template-columns:repeat(8,minmax(0,1fr))}}
 @media(max-width:650px){.channels{grid-template-columns:repeat(4,minmax(0,1fr))}.fader-area{height:185px}}
 
+
+/* Landscape console layout: use the complete available screen */
+@media (orientation:landscape){html,body{width:100%;height:100%;min-height:100%;margin:0}body{height:100dvh;overflow:hidden;display:flex;flex-direction:column}header{flex:0 0 auto;padding:4px 8px}.top{gap:5px;flex-wrap:nowrap}.brand{font-size:13px}.top button{padding:5px 8px;font-size:10px}.tap{min-width:48px}.subbar{gap:4px;padding:4px 0}.subbar button{padding:5px 7px;font-size:9px}main{flex:1 1 auto;min-height:0;overflow:auto;padding:6px}.channels{grid-template-columns:repeat(16,minmax(0,1fr));gap:4px}.channel{padding:4px 2px}.fader-area{height:clamp(115px,34dvh,230px)}input.fader{width:clamp(125px,18vw,210px)}.ch-name{font-size:9px}.ch-buttons button{font-size:8px;padding:5px 0;min-height:25px}}
+@media (orientation:landscape) and (max-height:500px){header{padding:2px 6px}.brand{font-size:11px}.top button{padding:4px 6px}.subbar{padding:2px 0}main{padding:3px}.fader-area{height:clamp(95px,30dvh,150px)}.channel{padding:3px 2px}}
 </style>
 </head>
 <body>
@@ -76,7 +80,7 @@ input.fader::-webkit-slider-thumb{width:31px;height:43px;margin-top:-20px;border
   <button class="tap" id="tapBtn">TAP</button>
   <div class="tempo"><b id="bpm">— BPM</b><span id="ms">— ms</span></div>
   <button onclick="togglePanel('layersPanel')">LAYERS</button>
-  <button onclick="togglePanel('settingsPanel')">⚙</button>
+  <button onclick="togglePanel('settingsPanel')">⚙</button><button id="fullBtn" onclick="toggleFullscreen()" aria-label="Полный экран">⛶</button>
  </div>
  <div class="subbar">
   <button class="active" onclick="setBank(0,this)">CH 1–16</button>
@@ -169,6 +173,8 @@ function togglePanel(id){document.getElementById(id).classList.toggle('show')}
 function demoConnect(){toast('Пока DEMO: после подключения X32 названия каналов будут считаны с консоли')}
 function toast(t){let x=document.getElementById('toast');x.textContent=t;x.classList.add('show');clearTimeout(window.tt);window.tt=setTimeout(()=>x.classList.remove('show'),2300)}
 document.getElementById('tapBtn').addEventListener('click',()=>{let now=Date.now();taps=taps.filter(t=>now-t<2500);taps.push(now);if(taps.length>1){let dif=[];for(let i=1;i<taps.length;i++)dif.push(taps[i]-taps[i-1]);let avg=dif.reduce((a,b)=>a+b,0)/dif.length;let bpm=Math.round(60000/avg);document.getElementById('bpm').textContent=bpm+' BPM';document.getElementById('ms').textContent=(60000/bpm).toFixed(1)+' ms'}else{document.getElementById('bpm').textContent='TAP…';document.getElementById('ms').textContent='ещё раз'}})
+
+function toggleFullscreen(){const el=document.documentElement;if(!document.fullscreenElement){if(el.requestFullscreen)el.requestFullscreen().then(()=>toast('Полноэкранный режим включён')).catch(()=>toast('Для полного экрана установи приложение как PWA'));}else if(document.exitFullscreen){document.exitFullscreen()}}
 function persist(){localStorage.setItem('x32tp_layers',JSON.stringify(layers))}
 function renderLayers(){let box=document.getElementById('layerList');box.innerHTML='';layers.forEach((l,i)=>{let b=document.createElement('button');b.textContent=l.name+' · '+l.channels.length+' CH';b.className=i===activeLayer?'active':'';b.onclick=()=>{activeLayer=i;renderLayers();toast('Активный слой: '+l.name)};box.appendChild(b)});let sel=document.getElementById('addChannel');sel.innerHTML='';for(let i=0;i<32;i++){let o=document.createElement('option');o.value=i;o.textContent='CH '+(i+1);sel.appendChild(o)}}
 function addLayer(){let n=document.getElementById('layerName').value.trim();if(!n){toast('Введи название слоя');return}layers.push({name:n,channels:[]});activeLayer=layers.length-1;document.getElementById('layerName').value='';persist();renderLayers();toast('Слой создан')}
