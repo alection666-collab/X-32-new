@@ -487,7 +487,7 @@ function saveLayer(){persist();toast('Раскладка сохранена на
 function addToLayer(){let n=+document.getElementById('addChannel').value;if(!layers[activeLayer].channels.includes(n))layers[activeLayer].channels.push(n);persist();renderLayers();toast('Канал добавлен')}
 function removeLast(){layers[activeLayer].channels.pop();persist();renderLayers();toast('Последний канал удалён')}
 
-const channelMeta=JSON.parse(localStorage.getItem('x32tp_channel_meta')||'{}'),channelIcons=['🎤','🎸','🎹','🥁','🎷','🎺','🎻','🎧','🎵','🎙️','🔊','🎛️','🎚️','🎼','🔔','🎹'],channelColors=['#4c91d4','#e05b57','#d69b36','#58a879','#9a70c8','#d66eaa','#36aeb7','#8a9aa4','#d2c34a','#e0e5e8','#7a8791','#bd7650'];
+const channelMeta=JSON.parse(localStorage.getItem('x32tp_channel_meta')||'{}'),channelIcons=['🎤','🎸','🎹','🥁','🎷','🎺','🎻','🎧','🎵','🎙️','🔊','🎛️','🎚️','🎼','🔔','🖥️','🔉','◀L','R▶','✨'],channelColors=['#4c91d4','#e05b57','#d69b36','#58a879','#9a70c8','#d66eaa','#36aeb7','#8a9aa4','#d2c34a','#e0e5e8','#7a8791','#bd7650'];
 let editingChannel=0,holdTimer=null,gainHoldTimer=null,eqDragBand=-1;
 function metaFor(n){return channelMeta[n]||(channelMeta[n]={name:channelName(n),icon:(n>=0&&n<32)?'':'🎤',color:'#4c91d4'})}
 // Remove the old automatic microphone icon from input channels; custom icons remain untouched.
