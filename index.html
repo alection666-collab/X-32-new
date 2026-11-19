@@ -566,16 +566,44 @@ document.getElementById('tapBtn').addEventListener('click',()=>{
 });
 
 
-/* Launch in app-style fullscreen where the browser permits it.
-   Installed PWA uses manifest display:standalone; browsers may block
-   requestFullscreen on page load unless a user gesture is present. */
-function autoLaunchFullscreen(){
- const standalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
- if(standalone&&document.documentElement.requestFullscreen&&!document.fullscreenElement){
-  document.documentElement.requestFullscreen().catch(()=>{});
+/* Landscape fullscreen: request immersive browser fullscreen on rotation.
+   Browsers may require a user gesture; if the automatic request is blocked,
+   the first tap in landscape retries it. Installed PWA remains standalone. */
+let landscapeFullscreenRetryBound=false;
+function isLandscapeMode(){return window.matchMedia('(orientation: landscape)').matches}
+function requestLandscapeFullscreen(){
+ if(!isLandscapeMode()||document.fullscreenElement||!document.documentElement.requestFullscreen)return;
+ document.documentElement.requestFullscreen({navigationUI:'hide'}).catch(()=>{});
+}
+function bindLandscapeFullscreenGesture(){
+ if(landscapeFullscreenRetryBound)return;
+ landscapeFullscreenRetryBound=true;
+ const retry=()=>{
+  if(isLandscapeMode()&&!document.fullscreenElement){
+   document.documentElement.requestFullscreen?.({navigationUI:'hide'}).then(()=>{
+    document.removeEventListener('pointerdown',retry,true);
+    document.removeEventListener('touchstart',retry,true);
+    landscapeFullscreenRetryBound=false;
+   }).catch(()=>{});
+  }
+ };
+ document.addEventListener('pointerdown',retry,true);
+ document.addEventListener('touchstart',retry,{capture:true,passive:true});
+}
+function syncLandscapeFullscreen(){
+ if(isLandscapeMode()){
+  requestLandscapeFullscreen();
+  bindLandscapeFullscreenGesture();
+ }else if(document.fullscreenElement){
+  document.exitFullscreen?.().catch(()=>{});
  }
 }
-window.addEventListener('load',()=>setTimeout(autoLaunchFullscreen,250));
+window.addEventListener('load',()=>setTimeout(syncLandscapeFullscreen,250));
+window.addEventListener('orientationchange',()=>setTimeout(syncLandscapeFullscreen,220));
+window.addEventListener('resize',()=>setTimeout(syncLandscapeFullscreen,120));
+document.addEventListener('fullscreenchange',()=>{
+ if(!document.fullscreenElement&&isLandscapeMode())bindLandscapeFullscreenGesture();
+});
 
 function persist(){localStorage.setItem('x32tp_layers',JSON.stringify(layers))}
 function renderLayers(){let box=document.getElementById('layerList');box.innerHTML='';layers.forEach((l,i)=>{let b=document.createElement('button');b.textContent=l.name+' · '+l.channels.length+' CH';b.className=i===activeLayer?'active':'';b.onclick=()=>{activeLayer=i;renderLayers();toast('Активный слой: '+l.name)};box.appendChild(b)});let sel=document.getElementById('addChannel');sel.innerHTML='';for(let i=0;i<32;i++){let o=document.createElement('option');o.value=i;o.textContent='CH '+(i+1);sel.appendChild(o)}}
