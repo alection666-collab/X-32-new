@@ -241,6 +241,11 @@ input.fader::-moz-range-thumb{
  box-shadow:0 3px 7px #000e,inset 0 1px 2px #fff!important;
 }
 
+
+/* TAP button flashes in sync with the selected tempo */
+.tap{transition:filter .07s,box-shadow .07s,transform .07s}
+.tap.beat-on{filter:brightness(1.65);box-shadow:0 0 18px #ffe36a,0 0 32px #f4ca4288,inset 0 0 12px #fff9}
+.tap:not(.beat-on){filter:brightness(.72);box-shadow:0 0 3px #a77c1e}
 </style>
 </head>
 <body>
@@ -345,7 +350,32 @@ function showSection(s,btn){['channelPanel','busPanel','fxPanel'].forEach(id=>do
 function togglePanel(id){document.getElementById(id).classList.toggle('show')}
 function demoConnect(){toast('Пока DEMO: после подключения X32 названия каналов будут считаны с консоли')}
 function toast(t){let x=document.getElementById('toast');x.textContent=t;x.classList.add('show');clearTimeout(window.tt);window.tt=setTimeout(()=>x.classList.remove('show'),2300)}
-document.getElementById('tapBtn').addEventListener('click',()=>{let now=Date.now();taps=taps.filter(t=>now-t<2500);taps.push(now);if(taps.length>1){let dif=[];for(let i=1;i<taps.length;i++)dif.push(taps[i]-taps[i-1]);let avg=dif.reduce((a,b)=>a+b,0)/dif.length;let bpm=Math.round(60000/avg);document.getElementById('bpm').textContent=bpm+' BPM';document.getElementById('ms').textContent=(60000/bpm).toFixed(1)+' ms'}else{document.getElementById('bpm').textContent='TAP…';document.getElementById('ms').textContent='ещё раз'}})
+let tapBpm=0,tapFlashTimer=null,tapPhase=false;
+function setTapTempo(bpm){
+ tapBpm=Math.max(30,Math.min(300,Math.round(bpm)));
+ document.getElementById('bpm').textContent=tapBpm+' BPM';
+ document.getElementById('ms').textContent=(60000/tapBpm).toFixed(1)+' ms';
+ const btn=document.getElementById('tapBtn');
+ if(tapFlashTimer)clearInterval(tapFlashTimer);
+ btn.classList.add('beat-on');
+ tapPhase=true;
+ const beatMs=60000/tapBpm;
+ tapFlashTimer=setInterval(()=>{
+  tapPhase=!tapPhase;
+  btn.classList.toggle('beat-on',tapPhase);
+ },beatMs/2);
+}
+document.getElementById('tapBtn').addEventListener('click',()=>{
+ let now=Date.now();taps=taps.filter(t=>now-t<2500);taps.push(now);
+ if(taps.length>1){
+  let dif=[];for(let i=1;i<taps.length;i++)dif.push(taps[i]-taps[i-1]);
+  let avg=dif.reduce((a,b)=>a+b,0)/dif.length;
+  setTapTempo(60000/avg);
+ }else{
+  document.getElementById('bpm').textContent='TAP…';
+  document.getElementById('ms').textContent='ещё раз';
+ }
+});
 
 function toggleFullscreen(){const el=document.documentElement;if(!document.fullscreenElement){if(el.requestFullscreen)el.requestFullscreen().then(()=>toast('Полноэкранный режим включён')).catch(()=>toast('Для полного экрана установи приложение как PWA'));}else if(document.exitFullscreen){document.exitFullscreen()}}
 function persist(){localStorage.setItem('x32tp_layers',JSON.stringify(layers))}
