@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#111820">
+<link rel="manifest" href="/X-32-new/manifest.json">
+<link rel="icon" href="/X-32-new/icon.svg" type="image/svg+xml">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="X32 TOUCH PRO">
 <title>X32 TOUCH PRO v0.2.1</title>
 <style>
 :root{--bg:#0b1117;--panel:#151e27;--panel2:#1c2833;--line:#30404d;--text:#e7edf2;--muted:#8fa0ad;--cyan:#35c6d4;--yellow:#f4ca42;--red:#ef5555;--green:#55cf87}
@@ -581,5 +587,7 @@ setInterval(animateMeters,280);
 /* Auto-adapt mixer layout after device rotation. */
 function syncLandscapeMode(){const landscape=window.matchMedia('(orientation: landscape)').matches;document.documentElement.classList.toggle('landscape-auto',landscape)}
 window.addEventListener('orientationchange',()=>setTimeout(syncLandscapeMode,180));window.addEventListener('resize',syncLandscapeMode);if(window.screen&&screen.orientation&&screen.orientation.addEventListener)screen.orientation.addEventListener('change',syncLandscapeMode);syncLandscapeMode();
+
+if('serviceWorker' in navigator && location.protocol==='https:'){window.addEventListener('load',()=>navigator.serviceWorker.register('/X-32-new/sw.js',{scope:'/X-32-new/'}).catch(err=>console.warn('PWA service worker:',err)))}
 </script>
 </body></html>
