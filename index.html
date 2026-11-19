@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#111820">
+<title>X32 TOUCH PRO — Prototype</title>
+<style>
+:root{--bg:#0b1117;--panel:#151e27;--panel2:#1c2833;--line:#30404d;--text:#e7edf2;--muted:#8fa0ad;--cyan:#35c6d4;--yellow:#f4ca42;--red:#ef5555;--green:#55cf87}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#0a1016,#111b24);color:var(--text);font:14px/1.25 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow-x:hidden;touch-action:pan-y}
+button,input{font:inherit}button{color:inherit;border:1px solid var(--line);background:linear-gradient(#263541,#18232d);border-radius:7px;padding:9px 12px;font-weight:700;letter-spacing:.04em;box-shadow:inset 0 1px #ffffff12,0 2px 5px #0006}
+button:active{transform:translateY(1px);filter:brightness(1.2)}button.active{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 12px #35c6d433}
+header{position:sticky;top:0;z-index:20;background:#101820ed;backdrop-filter:blur(12px);border-bottom:1px solid #34434e;padding:8px 12px;box-shadow:0 5px 20px #0007}
+.top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.brand{font-size:16px;font-weight:900;letter-spacing:.11em;margin-right:auto}.brand span{color:var(--cyan)}.status{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px}.dot{width:8px;height:8px;background:#77838c;border-radius:50%;display:inline-block}.dot.off{background:#d69c37}.top button{font-size:11px;padding:8px 10px}.tap{background:linear-gradient(#e9c94e,#a77c1e);color:#151515;border:1px solid #ffe88b;min-width:62px;font-size:14px!important}.tempo{font-size:11px;color:#dce5eb;text-align:center;min-width:55px}.tempo b{display:block;font-size:16px;color:var(--yellow)}
+.subbar{display:flex;gap:7px;align-items:center;margin-top:8px;overflow-x:auto;padding-bottom:2px}.subbar button{white-space:nowrap;font-size:10px;padding:7px 10px}.subbar .grow{margin-left:auto}
+main{padding:10px;max-width:1600px;margin:auto}.toolbar{display:flex;gap:7px;align-items:center;overflow-x:auto;padding:2px 0 10px}.toolbar button{white-space:nowrap;font-size:11px}.section-label{font-size:10px;letter-spacing:.16em;color:var(--muted);font-weight:800;margin:5px 0 9px}
+.mixer-wrap{background:linear-gradient(135deg,#1b2731,#101820);border:1px solid #34434e;border-radius:11px;padding:8px;box-shadow:0 12px 30px #0005}
+.channels{display:grid;grid-template-columns:repeat(8,minmax(74px,1fr));gap:6px}
+.channel{min-width:0;background:linear-gradient(180deg,#263541,#18232d 30%,#111920);border:1px solid #40515e;border-radius:7px;padding:6px 5px 8px;position:relative;box-shadow:inset 0 1px #ffffff12;user-select:none}
+.channel.selected{outline:2px solid var(--cyan);outline-offset:-2px}
+.ch-head{height:42px;border-bottom:1px solid #3c4b56;text-align:center;overflow:hidden}.ch-num{font-size:9px;color:#a9bac5}.ch-name{font-size:11px;font-weight:800;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;margin-top:3px}
+.meter{height:5px;background:#080d11;border-radius:5px;margin:6px 2px 5px;overflow:hidden}.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#39c878 0 65%,#e6c23c 80%,#e74c4c);box-shadow:0 0 7px #43d987}
+.pan-mini{font-size:9px;color:var(--muted);text-align:center;height:14px}
+.fader-area{height:205px;display:flex;justify-content:center;align-items:center;position:relative;background:linear-gradient(90deg,#10171d,#1a252e 50%,#10171d);border-radius:5px;margin:3px 0}
+.scale{position:absolute;left:5px;top:8px;bottom:8px;display:flex;flex-direction:column;justify-content:space-between;color:#81919c;font-size:8px}
+input.fader{appearance:none;-webkit-appearance:none;position:absolute;width:174px;height:28px;transform:rotate(-90deg);background:transparent;cursor:pointer;touch-action:none}
+input.fader::-webkit-slider-runnable-track{height:4px;background:linear-gradient(90deg,#111 0%,#596975 100%);border:1px solid #788792;border-radius:5px}
+input.fader::-webkit-slider-thumb{-webkit-appearance:none;width:27px;height:39px;margin-top:-18px;border-radius:5px;background:linear-gradient(90deg,#697983,#d5dde1 22%,#7d8b94 48%,#e1e6e8 72%,#586771);border:1px solid #dce4e8;box-shadow:0 2px 5px #000b,inset 0 1px #fff9}
+input.fader::-moz-range-track{height:4px;background:#52616b;border-radius:5px}input.fader::-moz-range-thumb{width:27px;height:39px;border-radius:5px;background:linear-gradient(90deg,#697983,#d5dde1,#586771);border:1px solid #dce4e8}
+.db{font:10px ui-monospace,monospace;text-align:center;color:#d8e0e5;height:16px}
+.ch-buttons{display:grid;grid-template-columns:1fr 1fr;gap:4px}.ch-buttons button{font-size:9px;padding:7px 2px}.mute.on{background:linear-gradient(#f16b68,#9e2929);border-color:#ff8d88;color:white}.solo.on{background:linear-gradient(#f3d45c,#9d791b);border-color:#ffe68a;color:#181818}
+.ch-bottom{font-size:9px;color:#9fb0bb;text-align:center;margin-top:6px;white-space:nowrap;overflow:hidden}
+.bottom-dock{display:flex;gap:6px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:9px}.dock-group{display:flex;gap:5px;flex-wrap:wrap}.dock-group button{font-size:10px;padding:8px 10px}
+.panel{margin-top:10px;background:linear-gradient(135deg,#1a2630,#121a22);border:1px solid #34434e;border-radius:10px;padding:12px;display:none}.panel.show{display:block}.panel h3{margin:0 0 10px;font-size:13px;letter-spacing:.08em}.param-grid{display:grid;grid-template-columns:repeat(4,minmax(90px,1fr));gap:8px}.param{background:#0d151c;border:1px solid #34434e;border-radius:7px;padding:9px}.param label{display:block;font-size:10px;color:var(--muted);margin-bottom:6px}.param strong{font-size:14px;color:var(--cyan)}.param input{width:100%;accent-color:var(--cyan)}
+.layer-list{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}.layer-list button{font-size:10px}.edit-row{display:flex;gap:7px;flex-wrap:wrap;align-items:center}.edit-row input,.edit-row select{background:#0d151c;color:var(--text);border:1px solid #435461;border-radius:6px;padding:9px;min-width:120px}
+.note{font-size:11px;color:#9aabb6;margin-top:9px}.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#e2f5f5;color:#102027;padding:10px 16px;border-radius:8px;font-weight:700;box-shadow:0 5px 20px #0009;z-index:50;opacity:0;pointer-events:none;transition:.2s}.toast.show{opacity:1}
+@media(min-width:900px){.channels{grid-template-columns:repeat(16,minmax(55px,1fr))}.channel{padding:5px 3px}.fader-area{height:240px}.channels .ch-name{font-size:10px}.channels .fader{width:205px}}
+@media(max-width:650px){main{padding:7px}.channels{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.fader-area{height:185px}.channel{padding:5px 4px}.param-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.brand{font-size:14px}.top{gap:5px}.top button{padding:7px 8px}}
+@media(orientation:portrait) and (min-width:651px){.channels{grid-template-columns:repeat(8,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<header>
+ <div class="top">
+  <div class="brand">X32 <span>TOUCH PRO</span></div>
+  <div class="status"><i class="dot off" id="dot"></i><span id="connText">DEMO MODE · OFFLINE</span></div>
+  <button id="connectBtn" onclick="demoConnect()">CONNECT</button>
+  <button class="tap" id="tapBtn">TAP</button>
+  <div class="tempo"><b id="bpm">— BPM</b><span id="ms">— ms</span></div>
+  <button onclick="togglePanel('layersPanel')">LAYERS</button>
+  <button onclick="togglePanel('settingsPanel')">⚙</button>
+ </div>
+ <div class="subbar">
+  <button class="active" onclick="setBank(0,this)">CH 1–16</button>
+  <button onclick="setBank(16,this)">CH 17–32</button>
+  <button onclick="setBank(32,this)">AUX / USB</button>
+  <button onclick="setBank(40,this)">BUS 1–8</button>
+  <button onclick="setBank(48,this)">BUS 9–16</button>
+  <button onclick="setBank(56,this)">DCA / MAIN</button>
+  <button class="grow" onclick="toast('Сейчас работает демонстрационный интерфейс')">DEMO</button>
+ </div>
+</header>
+<main>
+ <div class="toolbar">
+  <span class="section-label">MIXER SURFACE</span>
+  <button class="active" onclick="showSection('mixer',this)">MIX</button>
+  <button onclick="showSection('channel',this)">CHANNEL</button>
+  <button onclick="showSection('bus',this)">BUS / SENDS</button>
+  <button onclick="showSection('fx',this)">FX RACK</button>
+  <button onclick="toast('Routing будет добавлен в следующей версии')">ROUTING</button>
+ </div>
+ <div id="mixerView" class="mixer-wrap">
+  <div class="channels" id="channels"></div>
+  <div class="bottom-dock">
+   <div class="dock-group"><button onclick="setBank(0)">◀ BANK</button><button onclick="setBank(Math.min(bank+8,56))">BANK ▶</button><button onclick="togglePanel('layersPanel')">＋ CUSTOM LAYER</button></div>
+   <div class="dock-group"><button onclick="toast('DCA 1–8 · демо')">DCA 1–8</button><button onclick="toast('MAIN L/R · демо')">MAIN L/R</button><button onclick="toast('MONO/C · демо')">MONO/C</button></div>
+  </div>
+ </div>
+ <section id="channelPanel" class="panel">
+  <h3 id="channelTitle">CHANNEL 01 · INPUT</h3>
+  <div class="param-grid">
+   <div class="param"><label>PREAMP GAIN</label><strong id="gainVal">+24 dB</strong><input type="range" min="0" max="60" value="24" oninput="gainVal.textContent='+'+this.value+' dB'"></div>
+   <div class="param"><label>HPF</label><strong>120 Hz</strong><input type="range" min="20" max="400" value="120"></div>
+   <div class="param"><label>PAN</label><strong>C</strong><input type="range" min="-100" max="100" value="0"></div>
+   <div class="param"><label>GATE</label><strong>OFF</strong><input type="range" min="0" max="1" value="0"></div>
+   <div class="param"><label>EQ LOW</label><strong>80 Hz</strong><input type="range" min="20" max="200" value="80"></div>
+   <div class="param"><label>EQ LOW MID</label><strong>350 Hz</strong><input type="range" min="100" max="2000" value="350"></div>
+   <div class="param"><label>EQ HIGH MID</label><strong>2.5 kHz</strong><input type="range" min="500" max="10000" value="2500"></div>
+   <div class="param"><label>EQ HIGH</label><strong>10 kHz</strong><input type="range" min="2000" max="20000" value="10000"></div>
+  </div><p class="note">Пока это интерактивная визуальная модель. Параметры ещё не передаются в физический X32.</p>
+ </section>
+ <section id="busPanel" class="panel"><h3>BUS / SENDS ON FADER</h3><div class="layer-list"><button>BUS 1</button><button>BUS 2</button><button>BUS 3</button><button>BUS 4</button><button>BUS 5</button><button>BUS 6</button><button>BUS 7</button><button>BUS 8</button><button>BUS 9–16</button></div><p class="note">Выбор шины и режим Sends on Fader будут подключены к OSC на следующем этапе.</p></section>
+ <section id="fxPanel" class="panel"><h3>FX RACK · 8 SLOTS</h3><div class="layer-list"><button>FX 1 · DELAY</button><button>FX 2 · REVERB</button><button>FX 3 · CHORUS</button><button>FX 4 · EMPTY</button><button>FX 5 · EMPTY</button><button>FX 6 · EMPTY</button><button>FX 7 · EMPTY</button><button>FX 8 · EMPTY</button></div><p class="note">Кнопка TAP сверху рассчитывает темп и время четверти ноты. Передача значения в FX будет реализована после сетевого подключения.</p></section>
+ <section id="layersPanel" class="panel show">
+  <h3>CUSTOM LAYERS · РЕДАКТОР СЛОЁВ</h3>
+  <div class="layer-list" id="layerList"></div>
+  <div class="edit-row"><input id="layerName" placeholder="Название нового слоя"><button onclick="addLayer()">＋ СОЗДАТЬ СЛОЙ</button><button onclick="saveLayer()">СОХРАНИТЬ</button></div>
+  <div class="edit-row" style="margin-top:8px"><select id="addChannel"><option value="0">CH 1</option></select><button onclick="addToLayer()">ДОБАВИТЬ КАНАЛ</button><button onclick="removeLast()">УБРАТЬ ПОСЛЕДНИЙ</button></div>
+  <p class="note">В прототипе можно создавать слои и собирать их из каналов. Данные сохраняются в браузере этого устройства. Перетаскивание элементов и полноценная свободная компоновка появятся в следующей итерации.</p>
+ </section>
+ <section id="settingsPanel" class="panel"><h3>SETTINGS</h3><div class="param-grid">
+  <div class="param"><label>CONSOLE PROFILE</label><strong>X32 FOH</strong><p class="note">192.168.2.163 · сохранённый профиль</p></div>
+  <div class="param"><label>DISPLAY</label><strong>ADAPTIVE</strong><p class="note">Автоматическая адаптация под экран и ориентацию.</p></div>
+  <div class="param"><label>FADER BANK</label><strong>16 CHANNELS</strong><p class="note">На узких экранах — прокрутка и компактная сетка.</p></div>
+  <div class="param"><label>CONNECTION</label><strong>OSC / UDP</strong><p class="note">Сейчас демонстрационный режим, без связи с консолью.</p></div>
+ </div></section>
+</main>
+<div class="toast" id="toast"></div>
+<script>
+const names=['KICK','SNARE','HH','TOM 1','TOM 2','OH L','OH R','BASS','GTR 1','GTR 2','KEY L','KEY R','VOX 1','VOX 2','VOX 3','PLAYBACK'];
+let bank=0,selected=0,taps=[],layers=JSON.parse(localStorage.getItem('x32tp_layers')||'null')||[{name:'FOH',channels:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]},{name:'VOCALS',channels:[12,13,14]},{name:'DRUMS',channels:[0,1,2,3,4,5,6]}],activeLayer=0;
+function channelName(n){if(n<32)return names[n%16]||'INPUT '+(n+1);if(n<48)return 'AUX '+(n-31);if(n<64)return n<56?'BUS '+(n-39):'DCA '+(n-55);return 'MAIN'}
+function render(){let root=document.getElementById('channels');root.innerHTML='';let arr=Array.from({length:16},(_,i)=>bank+i);if(bank>=56)arr=Array.from({length:8},(_,i)=>56+i).concat(Array.from({length:8},(_,i)=>64+i));
+arr.forEach((n,i)=>{let el=document.createElement('div');el.className='channel'+(selected===n?' selected':'');let nm=channelName(n);el.innerHTML=`<div class="ch-head" onclick="selectCh(${n})"><div class="ch-num">${String(n+1).padStart(2,'0')}</div><div class="ch-name">${nm}</div></div><div class="meter"><i style="width:${Math.max(2,Math.random()*72)}%"></i></div><div class="pan-mini">PAN · ${i%3===0?'L':i%3===1?'C':'R'}</div><div class="fader-area"><div class="scale"><span>+10</span><span>0</span><span>-10</span><span>-20</span><span>-40</span><span>∞</span></div><input aria-label="${nm} fader" class="fader" type="range" min="-90" max="10" value="${faderVals[n]??-5}" oninput="faderVals[${n}]=+this.value;this.parentNode.nextElementSibling.textContent=(this.value>0?'+':'')+this.value+' dB'"></div><div class="db">${faderVals[n]??'-5'} dB</div><div class="ch-buttons"><button class="mute" onclick="this.classList.toggle('on');event.stopPropagation()">MUTE</button><button class="solo" onclick="this.classList.toggle('on');event.stopPropagation()">SOLO</button></div><div class="ch-bottom">SEL · ${i+1}</div>`;root.appendChild(el)});
+}
+let faderVals={};function setBank(n,btn){bank=n;render();document.querySelectorAll('.subbar button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active')}
+function selectCh(n){selected=n;document.getElementById('channelTitle').textContent='CHANNEL '+String(n+1).padStart(2,'0')+' · '+channelName(n);render();showSection('channel')}
+function showSection(s,btn){['channelPanel','busPanel','fxPanel'].forEach(id=>document.getElementById(id).classList.remove('show'));if(s==='channel')document.getElementById('channelPanel').classList.add('show');if(s==='bus')document.getElementById('busPanel').classList.add('show');if(s==='fx')document.getElementById('fxPanel').classList.add('show');if(btn){document.querySelectorAll('.toolbar button').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}}
+function togglePanel(id){document.getElementById(id).classList.toggle('show')}
+function demoConnect(){toast('Демо: сетевое подключение добавим после проверки на ноутбуке')}
+function toast(t){let x=document.getElementById('toast');x.textContent=t;x.classList.add('show');clearTimeout(window.tt);window.tt=setTimeout(()=>x.classList.remove('show'),2300)}
+document.getElementById('tapBtn').addEventListener('click',()=>{let now=Date.now();taps=taps.filter(t=>now-t<2500);taps.push(now);if(taps.length>1){let dif=[];for(let i=1;i<taps.length;i++)dif.push(taps[i]-taps[i-1]);let avg=dif.reduce((a,b)=>a+b,0)/dif.length;let bpm=Math.round(60000/avg);document.getElementById('bpm').textContent=bpm+' BPM';document.getElementById('ms').textContent=(60000/bpm).toFixed(1)+' ms'}else{document.getElementById('bpm').textContent='TAP…';document.getElementById('ms').textContent='ещё раз'}})
+function persist(){localStorage.setItem('x32tp_layers',JSON.stringify(layers))}
+function renderLayers(){let box=document.getElementById('layerList');box.innerHTML='';layers.forEach((l,i)=>{let b=document.createElement('button');b.textContent=l.name+' · '+l.channels.length+' CH';b.className=i===activeLayer?'active':'';b.onclick=()=>{activeLayer=i;renderLayers();toast('Активный слой: '+l.name)};box.appendChild(b)});let sel=document.getElementById('addChannel');sel.innerHTML='';for(let i=0;i<32;i++){let o=document.createElement('option');o.value=i;o.textContent='CH '+(i+1);sel.appendChild(o)}}
+function addLayer(){let n=document.getElementById('layerName').value.trim();if(!n){toast('Введи название слоя');return}layers.push({name:n,channels:[]});activeLayer=layers.length-1;document.getElementById('layerName').value='';persist();renderLayers();toast('Слой создан')}
+function saveLayer(){persist();toast('Раскладка сохранена на этом устройстве')}
+function addToLayer(){let n=+document.getElementById('addChannel').value;if(!layers[activeLayer].channels.includes(n))layers[activeLayer].channels.push(n);persist();renderLayers();toast('Канал добавлен')}
+function removeLast(){layers[activeLayer].channels.pop();persist();renderLayers();toast('Последний канал удалён')}
+render();renderLayers();
+</script>
+</body></html>
