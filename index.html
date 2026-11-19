@@ -529,3 +529,14 @@ setInterval(animateMeters,280);
 
 </script>
 </body></html>
+
+/* Fader travel: keep the complete cap visible at both mechanical endpoints.
+   The slider's rotated length is based on viewport height, not channel width. */
+.fader-area{overflow:hidden}
+input.fader{width:clamp(70px,calc(28vh - 58px),180px)!important;max-width:none}
+@media(orientation:landscape){
+ input.fader{width:clamp(65px,calc(34dvh - 58px),180px)!important}
+}
+@media(orientation:landscape) and (max-height:500px){
+ input.fader{width:clamp(55px,calc(30dvh - 48px),120px)!important}
+}
