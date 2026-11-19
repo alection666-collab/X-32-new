@@ -299,7 +299,10 @@ input.fader::-moz-range-thumb{
   <button onclick="showSection('channel',this)">CHANNEL</button>
   <button onclick="showSection('bus',this)">BUS / SENDS</button>
   <button onclick="showSection('fx',this)">FX RACK</button>
-  <button onclick="toast('Routing будет добавлен в следующей версии')">ROUTING</button>
+  <button onclick="showSection('routing',this)">ROUTING</button>
+  <button onclick="showSection('scenes',this)">SCENES</button>
+  <button onclick="showSection('meters',this)">METERS</button>
+  <button onclick="showSection('monitor',this)">MONITOR</button>
  </div>
  <div id="mixerView" class="mixer-wrap">
   <div class="channels" id="channels"></div>
@@ -310,7 +313,16 @@ input.fader::-moz-range-thumb{
  </div>
  <section id="channelPanel" class="panel channel-editor"><div class="channel-editor-head"><div><div class="section-label">SELECTED CHANNEL</div><h3 id="channelTitle">CHANNEL 01 · INPUT</h3></div><div class="channel-actions"><button id="channelOn" class="active" onclick="toggleChannelBlock('on')">CHANNEL ON</button><button onclick="resetChannel()">RESET</button></div></div><div class="channel-tabs"><button class="active" onclick="channelTab('preamp',this)">PREAMP</button><button onclick="channelTab('gate',this)">GATE</button><button onclick="channelTab('eq',this)">4-BAND EQ</button><button onclick="channelTab('comp',this)">COMP</button><button onclick="channelTab('pan',this)">PAN / WIDTH</button></div><div id="channelControls"></div><p class="note">Настройки сохраняются локально в браузере. Передача параметров в физический X32 через OSC пока не подключена.</p></section>
  <section id="busPanel" class="panel"><h3>BUS / SENDS ON FADER</h3><div class="layer-list"><button>BUS 1</button><button>BUS 2</button><button>BUS 3</button><button>BUS 4</button><button>BUS 5</button><button>BUS 6</button><button>BUS 7</button><button>BUS 8</button><button>BUS 9–16</button></div><p class="note">Выбор шины и режим Sends on Fader будут подключены к OSC на следующем этапе.</p></section>
- <section id="fxPanel" class="panel"><h3>FX RACK · 8 SLOTS</h3><div class="layer-list"><button>FX 1 · DELAY</button><button>FX 2 · REVERB</button><button>FX 3 · CHORUS</button><button>FX 4 · EMPTY</button><button>FX 5 · EMPTY</button><button>FX 6 · EMPTY</button><button>FX 7 · EMPTY</button><button>FX 8 · EMPTY</button></div><p class="note">Кнопка TAP сверху рассчитывает темп и время четверти ноты. Передача значения в FX будет реализована после сетевого подключения.</p></section>
+ <section id="fxPanel" class="panel"><h3>FX RACK · 8 SLOTS</h3><div class="layer-list"><button>FX 1 · DELAY</button><button>FX 2 · REVERB</button><button>FX 3 · CHORUS</button><button>FX 4 · EMPTY</button><button>FX 5 · EMPTY</button><button>FX 6 · EMPTY</button><button>FX 7 · EMPTY</button><button>FX 8 · EMPTY</button></div><p class="note">Кнопка TAP сверху рассчитывает темп и время четверти ноты. Передача значения в FX будет реализована после сетевого подключения.</p></section> 
+ <section id="routingPanel" class="panel"><h3>ROUTING · DEMO EDITOR</h3><div class="param-grid">
+  <div class="param"><label>INPUT SOURCE</label><select id="routeInput"><option>Local 1–32</option><option>AES50-A 1–48</option><option>AES50-B 1–48</option><option>Card 1–32</option></select></div>
+  <div class="param"><label>OUTPUT DESTINATION</label><select id="routeOutput"><option>XLR Out 1–16</option><option>AES50-A 1–48</option><option>AES50-B 1–48</option><option>Card 1–32</option></select></div>
+  <div class="param"><label>ROUTING BLOCK</label><select id="routeBlock"><option>Inputs</option><option>Outputs</option><option>Aux Out</option><option>P16 Ultranet</option></select></div>
+  <div class="param"><label>CHANNEL / SLOT</label><input id="routeSlot" type="number" min="1" max="48" value="1"></div>
+ </div><div class="edit-row" style="margin-top:10px"><button onclick="previewRoute()">PREVIEW PATCH</button><button onclick="toast('Патч пока не отправлен: OSC ещё не подключён')">APPLY TO X32</button></div><p id="routePreview" class="note">Изменения пока только демонстрационные. Никакие маршруты физического пульта не меняются.</p></section>
+ <section id="scenesPanel" class="panel"><h3>SCENES · LOCAL WORKSPACE</h3><div class="edit-row"><input id="sceneName" placeholder="Название сцены"><button onclick="saveLocalScene()">SAVE SCENE</button><button onclick="exportLocalScenes()">EXPORT JSON</button><input id="sceneImport" type="file" accept="application/json" onchange="importLocalScenes(event)"></div><div id="sceneList" class="layer-list" style="margin-top:10px"></div><p class="note">Это локальные снимки состояния интерфейса, не сцены X32. Recall на физический пульт будет доступен после реализации OSC и проверки совместимости.</p></section>
+ <section id="metersPanel" class="panel"><h3>METERS · SIGNAL OVERVIEW</h3><div class="param-grid"><div class="param"><label>INPUT METERS</label><strong>32 CHANNELS</strong><p class="note">Показания сейчас симулируются.</p></div><div class="param"><label>BUS METERS</label><strong>16 BUSES</strong><p class="note">Реальные уровни потребуют OSC meter subscription.</p></div><div class="param"><label>MAIN / MATRIX</label><strong>LCR + 6 MATRIX</strong><p class="note">Данные пока недоступны.</p></div><div class="param"><label>PEAK HOLD</label><button onclick="toast('Peak hold будет включён вместе с реальными meters')">RESET PEAKS</button></div></div></section>
+ <section id="monitorPanel" class="panel"><h3>MONITOR · SOLO / TALKBACK</h3><div class="param-grid"><div class="param"><label>SOLO MODE</label><select><option>PFL</option><option>AFL</option><option>IN PLACE</option></select></div><div class="param"><label>SOLO LEVEL</label><input type="range" min="-60" max="10" value="0"></div><div class="param"><label>TALKBACK A</label><button onclick="toast('Talkback A: OSC не подключён')">TALK A</button></div><div class="param"><label>TALKBACK B</label><button onclick="toast('Talkback B: OSC не подключён')">TALK B</button></div></div><p class="note">Мониторные параметры пока не передаются на консоль.</p></section>
  <section id="layersPanel" class="panel show">
   <h3>CUSTOM LAYERS · РЕДАКТОР СЛОЁВ</h3>
   <div class="layer-list" id="layerList"></div>
@@ -377,8 +389,24 @@ function setEq(i,k,v,id){let n=Number(v);currentChannelState().eq[i][k]=n;saveCh
 function toggleEqBand(i){let s=currentChannelState();s.eq[i].on=!s.eq[i].on;saveChannelState();renderChannelPage()}
 function resetChannel(){channelState[selected]=channelDefaults();saveChannelState();renderChannelPage();toast('Параметры канала сброшены')}
 
-function showSection(s,btn){['channelPanel','busPanel','fxPanel'].forEach(id=>document.getElementById(id).classList.remove('show'));if(s==='channel'){document.getElementById('channelPanel').classList.add('show');renderChannelPage();}if(s==='bus')document.getElementById('busPanel').classList.add('show');if(s==='fx')document.getElementById('fxPanel').classList.add('show');if(btn){document.querySelectorAll('.toolbar button').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}}
+function showSection(s,btn){
+ const panels={mixer:'mixerView',channel:'channelPanel',bus:'busPanel',fx:'fxPanel',routing:'routingPanel',scenes:'scenesPanel',meters:'metersPanel',monitor:'monitorPanel'};
+ Object.values(panels).forEach(id=>document.getElementById(id)?.classList.remove('show'));
+ Object.values(panels).forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none'});
+ const target=document.getElementById(panels[s]||'mixerView');
+ if(target){target.style.display='';if(s==='mixer')target.classList.add('show');else target.classList.add('show')}
+ if(s==='channel')renderChannelPage();
+ if(s==='scenes')renderLocalScenes();
+ if(btn){document.querySelectorAll('.toolbar button').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
+}
 function togglePanel(id){document.getElementById(id).classList.toggle('show')}
+let localScenes=JSON.parse(localStorage.getItem('x32tp_local_scenes')||'[]');
+function renderLocalScenes(){const box=document.getElementById('sceneList');if(!box)return;box.innerHTML='';localScenes.forEach((sc,i)=>{const b=document.createElement('button');b.textContent=sc.name+' · '+new Date(sc.created).toLocaleString();b.onclick=()=>{faderVals={...sc.faders};muteVals={...sc.mutes};soloVals={...sc.solos};localStorage.setItem('x32tp_faders',JSON.stringify(faderVals));localStorage.setItem('x32tp_mutes',JSON.stringify(muteVals));localStorage.setItem('x32tp_solos',JSON.stringify(soloVals));render();toast('Локальная сцена восстановлена')};box.appendChild(b)})}
+function saveLocalScene(){const name=document.getElementById('sceneName').value.trim();if(!name){toast('Укажи название сцены');return}localScenes.push({name,created:Date.now(),faders:{...faderVals},mutes:{...muteVals},solos:{...soloVals}});localStorage.setItem('x32tp_local_scenes',JSON.stringify(localScenes));document.getElementById('sceneName').value='';renderLocalScenes();toast('Локальная сцена сохранена')}
+function exportLocalScenes(){const blob=new Blob([JSON.stringify(localScenes,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='x32-touch-pro-scenes.json';a.click();URL.revokeObjectURL(a.href)}
+function importLocalScenes(e){const file=e.target.files&&e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const parsed=JSON.parse(reader.result);if(!Array.isArray(parsed))throw new Error('Формат должен быть массивом сцен');localScenes=parsed.filter(x=>x&&typeof x.name==='string'&&x.faders&&x.mutes&&x.solos);localStorage.setItem('x32tp_local_scenes',JSON.stringify(localScenes));renderLocalScenes();toast('Импортировано сцен: '+localScenes.length)}catch(err){toast('Ошибка импорта: '+err.message)}};reader.readAsText(file)}
+function previewRoute(){const a=document.getElementById('routeInput').value,b=document.getElementById('routeOutput').value,k=document.getElementById('routeBlock').value,n=document.getElementById('routeSlot').value;document.getElementById('routePreview').textContent=k+': '+a+' → '+b+' · slot '+n+' (предпросмотр; консоль не изменена)'}
+
 function demoConnect(){toast('Пока DEMO: после подключения X32 названия каналов будут считаны с консоли')}
 function toast(t){let x=document.getElementById('toast');x.textContent=t;x.classList.add('show');clearTimeout(window.tt);window.tt=setTimeout(()=>x.classList.remove('show'),2300)}
 let tapBpm=0,tapFlashTimer=null,tapPhase=false;
