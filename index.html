@@ -485,7 +485,7 @@ function render(){
   let el=document.createElement('div');
   el.className='channel'+(selected===n?' selected':'');
   let meta=metaFor(n),nm=meta.name||channelName(n), val=sendsMode&&n<32?(sendLevels[selectedSendBus+':'+n]??-10):(faderVals[n]??-5), meterLevel=18+((n*17)%63);
-  el.innerHTML=`<div class="ch-head" onpointerdown="startChannelHold(event,${n})" onpointerup="endChannelHold()" onpointerleave="endChannelHold()" onpointercancel="endChannelHold()" onclick="selectCh(${n})" ondblclick="openChannelConfig(${n});event.preventDefault()" title="Удержание — имя, иконка и цвет"><div class="ch-num">${n<32?'CH '+String(n+1).padStart(2,'0'):n>=32&&n<38?'AUX '+String(n-31).padStart(2,'0'):n>=40&&n<56?'BUS '+String(n-39).padStart(2,'0'):n<64?'DCA '+String(n-55).padStart(2,'0'):n<72?'FX RET '+String(n-63).padStart(2,'0'):n===72?'MAIN L':n===73?'MAIN R':n===74?'MONO/C':'MATRIX '+String(n-74).padStart(2,'0')}</div><div class="ch-name" style="--channel-color:${meta.color}">${nm}</div>${meta.icon?`<div class="ch-icon">${meta.icon}</div>`:""}</div>
+  el.innerHTML=`<div class="ch-head" onpointerdown="startChannelHold(event,${n})" onpointerup="endChannelHold()" onpointerleave="endChannelHold()" onpointercancel="endChannelHold()" onclick="handleChannelTap(${n},event)" title="Удержание — имя, иконка и цвет"><div class="ch-num">${n<32?'CH '+String(n+1).padStart(2,'0'):n>=32&&n<38?'AUX '+String(n-31).padStart(2,'0'):n>=40&&n<56?'BUS '+String(n-39).padStart(2,'0'):n<64?'DCA '+String(n-55).padStart(2,'0'):n<72?'FX RET '+String(n-63).padStart(2,'0'):n===72?'MAIN L':n===73?'MAIN R':n===74?'MONO/C':'MATRIX '+String(n-74).padStart(2,'0')}</div><div class="ch-name" style="--channel-color:${meta.color}">${nm}</div>${meta.icon?`<div class="ch-icon">${meta.icon}</div>`:""}</div>
    
    <div class="pan-mini">PAN · ${panVals[n]??'C'}</div>
    <div class="fader-area"><div class="meter meter-vertical" title="Уровень канала · DEMO"><i id="meter-${n}" style="height:${meterLevel}%"></i></div><div class="scale"><span>+10</span><span>0</span><span>−10</span><span>−20</span><span>−40</span><span>−∞</span></div>
@@ -514,6 +514,19 @@ function selectSendBus(n){selectedSendBus=n;sendsMode=true;let label=document.ge
 function toggleMuteGroup(n){muteGroups[n]=!muteGroups[n];localStorage.setItem('x32tp_mute_groups',JSON.stringify(muteGroups));document.querySelectorAll('.dock-group button').forEach(b=>{if(b.textContent==='MUTE GRP '+n)b.classList.toggle('active',!!muteGroups[n])});toast('Mute Group '+n+' '+(muteGroups[n]?'ON':'OFF')+' · локально')}
 function setBank(n,btn){bank=n;render();document.querySelectorAll('.xm-banks button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');const labels={0:'CH 1–8',8:'CH 9–16',16:'CH 17–24',24:'CH 25–32',32:'AUX 1–6',40:'BUS 1–8',48:'BUS 9–16',56:'DCA 1–8',64:'FX 1–8',72:'MTX / MAIN'};const x=document.getElementById('xmBankLabel');if(x)x.textContent=labels[n]||'CUSTOM'}
 function selectCh(n){selected=n;render();const x=document.getElementById("xmSelected");if(x)x.textContent=channelName(n)}
+// Reliable double-tap support for touchscreens, where native dblclick is inconsistent.
+let lastChannelTap={id:null,time:0};
+function handleChannelTap(n,e){
+ const now=Date.now();
+ if(lastChannelTap.id===n && now-lastChannelTap.time<420){
+  lastChannelTap={id:null,time:0};
+  if(e){e.preventDefault();e.stopPropagation()}
+  openChannelConfig(n);
+  return;
+ }
+ lastChannelTap={id:n,time:now};
+ selectCh(n);
+}
 function openChannelConfig(n){selected=n;channelPage='preamp';document.getElementById('channelTitle').textContent='CHANNEL '+String(n+1).padStart(2,'0')+' · '+channelName(n)+' · CONFIGURATION';render();showSection('channel');document.querySelectorAll('.channel-tabs button').forEach((b,i)=>b.classList.toggle('active',i===0));renderChannelPage();toast('Конфигурация '+channelName(n))}
 let channelPage='preamp',channelState=JSON.parse(localStorage.getItem('x32tp_channel_state')||'{}');
 // Default input preamp gain: 0 dB on every channel. Migrate the previous untouched default (24 dB).
