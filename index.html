@@ -569,8 +569,13 @@ function showSection(s,btn){
  const panels={mixer:'mixerView',channel:'channelPanel',bus:'busPanel',fx:'fxPanel',routing:'routingPanel',scenes:'scenesPanel',meters:'metersPanel',monitor:'monitorPanel'};
  Object.values(panels).forEach(id=>document.getElementById(id)?.classList.remove('show'));
  Object.values(panels).forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none'});
+ // Keep the mixer/faders visible while a channel's Detail/Config page is open.
+ if(s==='channel'){
+  const mixer=document.getElementById('mixerView');
+  if(mixer){mixer.style.display='';mixer.classList.add('show')}
+ }
  const target=document.getElementById(panels[s]||'mixerView');
- if(target){target.style.display='';if(s==='mixer')target.classList.add('show');else target.classList.add('show')}
+ if(target){target.style.display='';target.classList.add('show')}
  if(s==='channel')renderChannelPage();
  if(s==='scenes')renderLocalScenes();
  if(btn){document.querySelectorAll('.xm-tabs button').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
