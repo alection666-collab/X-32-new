@@ -123,6 +123,14 @@ input.fader::-moz-range-thumb{
  border:1px solid #e1e1d7;box-shadow:0 3px 5px #000e,inset 0 1px 2px #fff;
 }
 .db{font:700 10px ui-monospace,monospace;color:#d5d0b7;text-shadow:0 1px 2px #000}
+
+/* Compact M / S switches for narrow landscape channel strips */
+.ch-buttons{display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.ch-buttons button{min-width:0;width:100%;height:27px;min-height:27px;padding:2px 0;font:900 12px/1 ui-monospace,monospace;letter-spacing:0;border-radius:3px}
+.ch-buttons .mute{color:#e6a09a}.ch-buttons .solo{color:#e8d28b}
+.ch-buttons .mute.on{color:#fff;background:linear-gradient(#f16b68,#9e2929);border-color:#ff8d88}
+.ch-buttons .solo.on{color:#181818;background:linear-gradient(#f3d45c,#9d791b);border-color:#ffe68a}
+@media (orientation:landscape){.ch-buttons{gap:2px}.ch-buttons button{height:23px;min-height:23px;font-size:11px;padding:1px 0}}
 </style>
 </head>
 <body>
@@ -210,7 +218,7 @@ function render(){
    <div class="fader-area"><div class="scale"><span>+10</span><span>0</span><span>−10</span><span>−20</span><span>−40</span><span>−∞</span></div>
    <input aria-label="${nm} fader" class="fader" type="range" min="-90" max="10" step="0.1" value="${val}" oninput="faderVals[${n}]=+this.value;localStorage.setItem('x32tp_faders',JSON.stringify(faderVals));this.parentNode.nextElementSibling.textContent=(this.value>0?'+':'')+(+this.value).toFixed(1)+' dB'"></div>
    <div class="db">${val>0?'+':''}${Number(val).toFixed(1)} dB</div>
-   <div class="ch-buttons"><button class="mute ${muteVals[n]?'on':''}" onclick="toggleStrip(${n},'mute',this);event.stopPropagation()">MUTE</button><button class="solo ${soloVals[n]?'on':''}" onclick="toggleStrip(${n},'solo',this);event.stopPropagation()">SOLO</button></div>
+   <div class="ch-buttons"><button class="mute ${muteVals[n]?'on':''}" aria-label="MUTE" title="MUTE" onclick="toggleStrip(${n},'mute',this);event.stopPropagation()">M</button><button class="solo ${soloVals[n]?'on':''}" aria-label="SOLO" title="SOLO" onclick="toggleStrip(${n},'solo',this);event.stopPropagation()">S</button></div>
    <div class="ch-bottom">SELECT · ${i+1}</div>`;
   root.appendChild(el);
  });
