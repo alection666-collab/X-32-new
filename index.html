@@ -246,6 +246,29 @@ input.fader::-moz-range-thumb{
 .tap{transition:filter .07s,box-shadow .07s,transform .07s}
 .tap.beat-on{filter:brightness(1.65);box-shadow:0 0 18px #ffe36a,0 0 32px #f4ca4288,inset 0 0 12px #fff9}
 .tap:not(.beat-on){filter:brightness(.72);box-shadow:0 0 3px #a77c1e}
+
+/* Vertical signal meter aligned beside each fader, rising bottom-to-top */
+.fader-area .meter.meter-vertical{
+ position:absolute!important;left:calc(50% - 25px)!important;top:8px!important;bottom:8px!important;
+ width:8px!important;height:auto!important;margin:0!important;padding:1px!important;
+ display:flex!important;flex-direction:column!important;justify-content:flex-end!important;
+ overflow:hidden!important;border:1px solid #59686e!important;border-radius:2px!important;
+ background:repeating-linear-gradient(0deg,#080d10 0 5px,#263139 5px 6px)!important;
+ box-shadow:inset 0 1px 3px #000!important;z-index:1;
+}
+.fader-area .meter.meter-vertical i{
+ display:block!important;width:100%!important;height:0%;min-height:2px;
+ background:repeating-linear-gradient(0deg,#20c66a 0 5px,#0d6c3b 5px 6px)!important;
+ box-shadow:0 0 5px #31d879!important;transition:height .12s linear,filter .12s;
+}
+.fader-area .meter.meter-vertical i.hot{
+ background:repeating-linear-gradient(0deg,#f0c83e 0 5px,#8b6a16 5px 6px)!important;
+ box-shadow:0 0 5px #f0c83e!important;
+}
+.fader-area .meter.meter-vertical i.peak{
+ background:repeating-linear-gradient(0deg,#ef514b 0 5px,#8c2522 5px 6px)!important;
+ box-shadow:0 0 6px #ef514b!important;
+}
 </style>
 </head>
 <body>
@@ -328,9 +351,9 @@ function render(){
   el.className='channel'+(selected===n?' selected':'');
   let nm=channelName(n), val=faderVals[n]??-5, meterLevel=18+((n*17)%63);
   el.innerHTML=`<div class="ch-head" onclick="selectCh(${n})" ondblclick="openChannelConfig(${n});event.preventDefault() " title="Двойное нажатие — конфигурация канала"><div class="ch-num">${n<32?'CH '+String(n+1).padStart(2,'0'):n>=32&&n<38?'AUX '+String(n-31).padStart(2,'0'):n>=40&&n<56?'BUS '+String(n-39).padStart(2,'0'):n<64?'DCA '+String(n-55).padStart(2,'0'):'MAIN'}</div><div class="ch-name">${nm}</div></div>
-   <div class="meter" title="Уровень канала · DEMO"><i id="meter-${n}" style="width:${meterLevel}%"></i></div>
+   
    <div class="pan-mini">PAN · ${panVals[n]??'C'}</div>
-   <div class="fader-area"><div class="scale"><span>+10</span><span>0</span><span>−10</span><span>−20</span><span>−40</span><span>−∞</span></div>
+   <div class="fader-area"><div class="meter meter-vertical" title="Уровень канала · DEMO"><i id="meter-${n}" style="height:${meterLevel}%"></i></div><div class="scale"><span>+10</span><span>0</span><span>−10</span><span>−20</span><span>−40</span><span>−∞</span></div>
    <input aria-label="${nm} fader" class="fader" type="range" min="-90" max="10" step="0.1" value="${val}" oninput="faderVals[${n}]=+this.value;localStorage.setItem('x32tp_faders',JSON.stringify(faderVals));this.parentNode.nextElementSibling.textContent=(this.value>0?'+':'')+(+this.value).toFixed(1)+' dB'"></div>
    <div class="db">${val>0?'+':''}${Number(val).toFixed(1)} dB</div>
    <div class="ch-buttons"><button class="mute ${muteVals[n]?'on':''}" aria-label="MUTE" title="MUTE" onclick="toggleStrip(${n},'mute',this);event.stopPropagation()">M</button><button class="solo ${soloVals[n]?'on':''}" aria-label="SOLO" title="SOLO" onclick="toggleStrip(${n},'solo',this);event.stopPropagation()">S</button></div>
@@ -392,7 +415,7 @@ function animateMeters(){
  document.querySelectorAll('.meter i').forEach((bar)=>{
   const n=Number(bar.id.replace('meter-',''));
   const level=8+Math.round(Math.random()*76);
-  bar.style.width=level+'%';
+  bar.style.height=level+'%';
   bar.classList.toggle('hot',level>=68&&level<88);
   bar.classList.toggle('peak',level>=88);
  });
