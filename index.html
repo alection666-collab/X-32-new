@@ -527,7 +527,7 @@ function handleChannelTap(n,e){
  lastChannelTap={id:n,time:now};
  selectCh(n);
 }
-function openChannelConfig(n){selected=n;channelPage='preamp';document.getElementById('channelTitle').textContent='CHANNEL '+String(n+1).padStart(2,'0')+' · '+channelName(n)+' · CONFIGURATION';render();showSection('channel');document.querySelectorAll('.channel-tabs button').forEach((b,i)=>b.classList.toggle('active',i===0));renderChannelPage();toast('Конфигурация '+channelName(n))}
+function openChannelConfig(n){selected=n;channelPage='preamp';document.getElementById('channelTitle').textContent='CHANNEL '+String(n+1).padStart(2,'0')+' · '+channelName(n)+' · CONFIGURATION';render();showSection('channel');document.querySelectorAll('.channel-tabs button').forEach((b,i)=>b.classList.toggle('active',i===0));renderChannelPage();requestAnimationFrame(()=>{const panel=document.getElementById('channelPanel');if(panel){panel.style.display='block';panel.classList.add('show');panel.scrollIntoView({behavior:'smooth',block:'start'});}});toast('Конфигурация '+channelName(n))}
 let channelPage='preamp',channelState=JSON.parse(localStorage.getItem('x32tp_channel_state')||'{}');
 // Default input preamp gain: 0 dB on every channel. Migrate the previous untouched default (24 dB).
 for(let i=0;i<32;i++){if(!channelState[i])channelState[i]=channelDefaults();else if(Number(channelState[i].gain)===24)channelState[i].gain=0;}
