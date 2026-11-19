@@ -131,6 +131,66 @@ input.fader::-moz-range-thumb{
 .ch-buttons .mute.on{color:#fff;background:linear-gradient(#f16b68,#9e2929);border-color:#ff8d88}
 .ch-buttons .solo.on{color:#181818;background:linear-gradient(#f3d45c,#9d791b);border-color:#ffe68a}
 @media (orientation:landscape){.ch-buttons{gap:2px}.ch-buttons button{height:23px;min-height:23px;font-size:11px;padding:1px 0}}
+
+/* Yamaha CL-style physical fader recreation */
+.channel{
+ background:linear-gradient(180deg,#252b2e 0%,#171c1f 100%);
+ border:1px solid #42494c;border-radius:2px;padding:5px 3px 6px;
+ box-shadow:inset 0 1px #ffffff12,0 2px 4px #0009;
+}
+.ch-head{
+ height:40px;margin:0 1px 5px;padding:3px 2px;
+ display:flex;flex-direction:column;justify-content:center;align-items:center;
+ background:linear-gradient(180deg,#090d10,#1b2429 55%,#0c1114);
+ border:1px solid #050809;border-radius:1px;
+ box-shadow:inset 0 0 5px #000,0 1px 1px #ffffff12;
+}
+.ch-num{font:700 8px/1.1 Arial,sans-serif;color:#9ba7ac;letter-spacing:.04em;text-shadow:none}
+.ch-name{
+ width:100%;font:700 10px/1.15 Arial,sans-serif;color:#e8edef;
+ letter-spacing:0;text-shadow:none;margin-top:3px;
+}
+.ch-head:after{
+ content:"";display:block;width:100%;height:3px;margin-top:3px;
+ background:linear-gradient(90deg,#315c91,#4387c2 50%,#315c91);
+ box-shadow:0 0 3px #4387c277;
+}
+.fader-area{
+ height:clamp(150px,28vh,250px);margin:3px 0 4px;overflow:hidden;
+ border:1px solid #090c0e;border-radius:1px;
+ background:linear-gradient(90deg,#090d0f 0%,#20282c 13%,#141a1d 50%,#20282c 87%,#090d0f 100%);
+ box-shadow:inset 0 0 8px #000;
+}
+.fader-area:before{
+ content:"";position:absolute;left:50%;top:7px;bottom:7px;width:7px;
+ transform:translateX(-50%);border-radius:1px;
+ background:linear-gradient(90deg,#050708,#333c40 45%,#080b0d);
+ border:1px solid #485156;box-shadow:inset 0 0 3px #000;
+ pointer-events:none;
+}
+.scale{left:3px;color:#b7bec0;text-shadow:0 1px 2px #000;font:7px Arial,sans-serif}
+input.fader{width:clamp(145px,18vw,215px);height:32px;z-index:2}
+input.fader::-webkit-slider-runnable-track{
+ height:5px;background:transparent;border:0;border-radius:0;
+}
+input.fader::-webkit-slider-thumb{
+ -webkit-appearance:none;width:34px;height:42px;margin-top:-19px;border-radius:2px;
+ background:
+  linear-gradient(180deg,transparent 0 16%,#132b45 17% 48%,#071727 49% 53%,#183653 54% 67%,transparent 68%),
+  linear-gradient(90deg,#657078 0%,#d2d7d7 16%,#899397 38%,#e0e3df 62%,#7b8588 84%,#4c565b 100%);
+ border:1px solid #c5cbca;
+ box-shadow:0 2px 4px #000e,inset 0 1px 1px #fff9,inset 0 -2px 3px #41494b;
+}
+input.fader::-moz-range-track{height:5px;background:transparent;border:0}
+input.fader::-moz-range-thumb{
+ width:34px;height:42px;border-radius:2px;
+ background:linear-gradient(180deg,#132b45 0 30%,#071727 31% 48%,#183653 49% 62%,#cbd1d0 63%,#899397 100%);
+ border:1px solid #c5cbca;box-shadow:0 2px 4px #000e,inset 0 1px 1px #fff9;
+}
+.db{font:700 9px Arial,sans-serif;color:#d8dfe0;text-shadow:0 1px 2px #000}
+.ch-buttons button{border-radius:2px}
+@media(orientation:landscape){.fader-area{height:clamp(115px,34dvh,230px)}}
+
 </style>
 </head>
 <body>
