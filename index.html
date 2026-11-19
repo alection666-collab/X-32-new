@@ -269,7 +269,7 @@ input.fader::-moz-range-thumb{
  background:repeating-linear-gradient(0deg,#ef514b 0 5px,#8c2522 5px 6px)!important;
  box-shadow:0 0 6px #ef514b!important;
 }
-</style>
+.channel-editor-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.channel-actions,.channel-tabs{display:flex;gap:6px;flex-wrap:wrap}.channel-tabs{border-bottom:1px solid #40515e;padding-bottom:10px;margin-bottom:12px}.channel-tabs button,.channel-actions button{font-size:10px}.channel-page{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.channel-control{background:linear-gradient(#202c35,#0d151c);border:1px solid #3b4c57;border-radius:8px;padding:11px;min-width:0}.channel-control label{display:block;color:#aab9c2;font-size:10px;font-weight:800;margin-bottom:7px}.channel-control output{display:block;color:#58d7e1;font:700 17px ui-monospace,monospace;margin-bottom:7px}.channel-control input{width:100%;accent-color:#35c6d4}.channel-control .unit{font-size:10px;color:#82939e}.channel-control .toggle-line{display:flex;justify-content:space-between;align-items:center;gap:8px}.channel-control button{font-size:10px}.eq-band{border-top:3px solid #438ac4}@media(max-width:700px){.channel-page{grid-template-columns:repeat(2,minmax(0,1fr))}.channel-editor-head{align-items:flex-start;flex-direction:column}}</style>
 </head>
 <body>
 <header>
@@ -308,19 +308,7 @@ input.fader::-moz-range-thumb{
    <div class="dock-group"><button onclick="toast('DCA 1–8 · демо')">DCA 1–8</button><button onclick="toast('MAIN L/R · демо')">MAIN L/R</button><button onclick="toast('MONO/C · демо')">MONO/C</button></div>
   </div>
  </div>
- <section id="channelPanel" class="panel">
-  <h3 id="channelTitle">CHANNEL 01 · INPUT</h3>
-  <div class="param-grid">
-   <div class="param"><label>PREAMP GAIN</label><strong id="gainVal">+24 dB</strong><input type="range" min="0" max="60" value="24" oninput="gainVal.textContent='+'+this.value+' dB'"></div>
-   <div class="param"><label>HPF</label><strong>120 Hz</strong><input type="range" min="20" max="400" value="120"></div>
-   <div class="param"><label>PAN</label><strong>C</strong><input type="range" min="-100" max="100" value="0"></div>
-   <div class="param"><label>GATE</label><strong>OFF</strong><input type="range" min="0" max="1" value="0"></div>
-   <div class="param"><label>EQ LOW</label><strong>80 Hz</strong><input type="range" min="20" max="200" value="80"></div>
-   <div class="param"><label>EQ LOW MID</label><strong>350 Hz</strong><input type="range" min="100" max="2000" value="350"></div>
-   <div class="param"><label>EQ HIGH MID</label><strong>2.5 kHz</strong><input type="range" min="500" max="10000" value="2500"></div>
-   <div class="param"><label>EQ HIGH</label><strong>10 kHz</strong><input type="range" min="2000" max="20000" value="10000"></div>
-  </div><p class="note">Пока это интерактивная визуальная модель. Параметры ещё не передаются в физический X32.</p>
- </section>
+ <section id="channelPanel" class="panel channel-editor"><div class="channel-editor-head"><div><div class="section-label">SELECTED CHANNEL</div><h3 id="channelTitle">CHANNEL 01 · INPUT</h3></div><div class="channel-actions"><button id="channelOn" class="active" onclick="toggleChannelBlock('on')">CHANNEL ON</button><button onclick="resetChannel()">RESET</button></div></div><div class="channel-tabs"><button class="active" onclick="channelTab('preamp',this)">PREAMP</button><button onclick="channelTab('gate',this)">GATE</button><button onclick="channelTab('eq',this)">4-BAND EQ</button><button onclick="channelTab('comp',this)">COMP</button><button onclick="channelTab('pan',this)">PAN / WIDTH</button></div><div id="channelControls"></div><p class="note">Настройки сохраняются локально в браузере. Передача параметров в физический X32 через OSC пока не подключена.</p></section>
  <section id="busPanel" class="panel"><h3>BUS / SENDS ON FADER</h3><div class="layer-list"><button>BUS 1</button><button>BUS 2</button><button>BUS 3</button><button>BUS 4</button><button>BUS 5</button><button>BUS 6</button><button>BUS 7</button><button>BUS 8</button><button>BUS 9–16</button></div><p class="note">Выбор шины и режим Sends on Fader будут подключены к OSC на следующем этапе.</p></section>
  <section id="fxPanel" class="panel"><h3>FX RACK · 8 SLOTS</h3><div class="layer-list"><button>FX 1 · DELAY</button><button>FX 2 · REVERB</button><button>FX 3 · CHORUS</button><button>FX 4 · EMPTY</button><button>FX 5 · EMPTY</button><button>FX 6 · EMPTY</button><button>FX 7 · EMPTY</button><button>FX 8 · EMPTY</button></div><p class="note">Кнопка TAP сверху рассчитывает темп и время четверти ноты. Передача значения в FX будет реализована после сетевого подключения.</p></section>
  <section id="layersPanel" class="panel show">
@@ -368,8 +356,28 @@ let panVals={};
 function toggleStrip(n,type,btn){let store=type==='mute'?muteVals:soloVals;store[n]=!store[n];btn.classList.toggle('on',store[n]);localStorage.setItem(type==='mute'?'x32tp_mutes':'x32tp_solos',JSON.stringify(store))}
 function setBank(n,btn){bank=n;render();document.querySelectorAll('.subbar button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active')}
 function selectCh(n){selected=n;render()}
-function openChannelConfig(n){selected=n;document.getElementById('channelTitle').textContent='CHANNEL '+String(n+1).padStart(2,'0')+' · '+channelName(n)+' · CONFIGURATION';render();showSection('channel');toast('Конфигурация '+channelName(n))}
-function showSection(s,btn){['channelPanel','busPanel','fxPanel'].forEach(id=>document.getElementById(id).classList.remove('show'));if(s==='channel')document.getElementById('channelPanel').classList.add('show');if(s==='bus')document.getElementById('busPanel').classList.add('show');if(s==='fx')document.getElementById('fxPanel').classList.add('show');if(btn){document.querySelectorAll('.toolbar button').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}}
+function openChannelConfig(n){selected=n;document.getElementById('channelTitle').textContent='CHANNEL '+String(n+1).padStart(2,'0')+' · '+channelName(n)+' · CONFIGURATION';render();showSection('channel');renderChannelPage();toast('Конфигурация '+channelName(n))}
+let channelPage='preamp',channelState=JSON.parse(localStorage.getItem('x32tp_channel_state')||'{}');
+function channelDefaults(){return {on:true,gain:24,hpfOn:true,hpf:120,phase:false,phantom:false,gateOn:false,gateThreshold:-45,gateRange:30,gateAttack:10,gateHold:80,gateRelease:200,eqOn:true,eq:[{on:true,type:'LOW SHELF',freq:80,gain:0,q:.7},{on:true,type:'LOW MID',freq:350,gain:0,q:1.2},{on:true,type:'HIGH MID',freq:2500,gain:0,q:1.2},{on:true,type:'HIGH SHELF',freq:10000,gain:0,q:.7}],compOn:false,threshold:-18,ratio:3,attack:10,release:120,knee:6,makeup:0,pan:0,width:100}}
+function currentChannelState(){if(!channelState[selected])channelState[selected]=channelDefaults();return channelState[selected]}
+function saveChannelState(){localStorage.setItem('x32tp_channel_state',JSON.stringify(channelState))}
+function channelControl(label,key,value,min,max,step,unit){return '<div class="channel-control"><label>'+label+'</label><output id="out-'+key+'">'+value+'</output><input type="range" min="'+min+'" max="'+max+'" step="'+step+'" value="'+value+'" oninput="setChannelValue(\''+key+'\',this.value,\''+unit+'\')"><span class="unit">'+unit+'</span></div>'}
+function setChannelValue(k,v,u){let n=Number(v);currentChannelState()[k]=n;saveChannelState();let o=document.getElementById('out-'+k);if(o)o.textContent=(n>0&&u==='dB'?'+':'')+n}
+function channelToggle(label,key){let on=!!currentChannelState()[key];return '<div class="channel-control"><div class="toggle-line"><label>'+label+'</label><button class="'+(on?'active':'')+'" onclick="toggleChannelBlock(\''+key+'\')">'+(on?'ON':'OFF')+'</button></div></div>'}
+function toggleChannelBlock(k){let s=currentChannelState();s[k]=!s[k];saveChannelState();renderChannelPage()}
+function channelTab(p,btn){channelPage=p;document.querySelectorAll('.channel-tabs button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');renderChannelPage()}
+function renderChannelPage(){let s=currentChannelState(),h='';
+if(channelPage==='preamp')h='<div class="channel-page">'+channelControl('PREAMP GAIN','gain',s.gain,0,60,.5,'dB')+channelControl('HPF FREQUENCY','hpf',s.hpf,20,400,1,'Hz')+channelToggle('HPF ENABLE','hpfOn')+channelToggle('PHASE INVERT','phase')+channelToggle('48V PHANTOM','phantom')+'</div>';
+else if(channelPage==='gate')h='<div class="channel-page">'+channelToggle('GATE ENABLE','gateOn')+channelControl('THRESHOLD','gateThreshold',s.gateThreshold,-60,0,1,'dB')+channelControl('RANGE','gateRange',s.gateRange,0,60,1,'dB')+channelControl('ATTACK','gateAttack',s.gateAttack,0,200,1,'ms')+channelControl('HOLD','gateHold',s.gateHold,0,2000,5,'ms')+channelControl('RELEASE','gateRelease',s.gateRelease,5,4000,5,'ms')+'</div>';
+else if(channelPage==='eq')h='<div class="channel-page">'+channelToggle('EQ ENABLE','eqOn')+s.eq.map((x,i)=>'<div class="channel-control eq-band"><label>EQ BAND '+(i+1)+' · '+x.type+'</label><button onclick="toggleEqBand('+i+')" class="'+(x.on?'active':'')+'">'+(x.on?'ON':'OFF')+'</button><label>FREQUENCY</label><output id="eqf'+i+'">'+x.freq+' Hz</output><input type="range" min="20" max="20000" value="'+x.freq+'" oninput="setEq('+i+',\'freq\',this.value,\'eqf'+i+'\')"><label>GAIN</label><output id="eqg'+i+'">'+x.gain+' dB</output><input type="range" min="-18" max="18" step=".1" value="'+x.gain+'" oninput="setEq('+i+',\'gain\',this.value,\'eqg'+i+'\')"><label>Q</label><output id="eqq'+i+'">'+x.q+'</output><input type="range" min=".3" max="10" step=".1" value="'+x.q+'" oninput="setEq('+i+',\'q\',this.value,\'eqq'+i+'\')"></div>').join('')+'</div>';
+else if(channelPage==='comp')h='<div class="channel-page">'+channelToggle('COMPRESSOR ENABLE','compOn')+channelControl('THRESHOLD','threshold',s.threshold,-60,0,.5,'dB')+channelControl('RATIO','ratio',s.ratio,1,20,.1,':1')+channelControl('ATTACK','attack',s.attack,.1,100,.1,'ms')+channelControl('RELEASE','release',s.release,5,4000,1,'ms')+channelControl('KNEE','knee',s.knee,0,30,.5,'dB')+channelControl('MAKEUP GAIN','makeup',s.makeup,0,24,.5,'dB')+'</div>';
+else h='<div class="channel-page">'+channelControl('PAN','pan',s.pan,-100,100,1,'L ← / → R')+channelControl('STEREO WIDTH','width',s.width,0,200,1,'%')+'</div><p class="note">−100 = LEFT · 0 = CENTER · +100 = RIGHT</p>';
+document.getElementById('channelControls').innerHTML=h;document.getElementById('channelOn').classList.toggle('active',s.on);document.getElementById('channelOn').textContent=s.on?'CHANNEL ON':'CHANNEL OFF'}
+function setEq(i,k,v,id){let n=Number(v);currentChannelState().eq[i][k]=n;saveChannelState();document.getElementById(id).textContent=k==='freq'?n+' Hz':k==='gain'?n+' dB':n}
+function toggleEqBand(i){let s=currentChannelState();s.eq[i].on=!s.eq[i].on;saveChannelState();renderChannelPage()}
+function resetChannel(){channelState[selected]=channelDefaults();saveChannelState();renderChannelPage();toast('Параметры канала сброшены')}
+
+function showSection(s,btn){['channelPanel','busPanel','fxPanel'].forEach(id=>document.getElementById(id).classList.remove('show'));if(s==='channel'){document.getElementById('channelPanel').classList.add('show');renderChannelPage();}if(s==='bus')document.getElementById('busPanel').classList.add('show');if(s==='fx')document.getElementById('fxPanel').classList.add('show');if(btn){document.querySelectorAll('.toolbar button').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}}
 function togglePanel(id){document.getElementById(id).classList.toggle('show')}
 function demoConnect(){toast('Пока DEMO: после подключения X32 названия каналов будут считаны с консоли')}
 function toast(t){let x=document.getElementById('toast');x.textContent=t;x.classList.add('show');clearTimeout(window.tt);window.tt=setTimeout(()=>x.classList.remove('show'),2300)}
@@ -407,7 +415,7 @@ function addLayer(){let n=document.getElementById('layerName').value.trim();if(!
 function saveLayer(){persist();toast('Раскладка сохранена на этом устройстве')}
 function addToLayer(){let n=+document.getElementById('addChannel').value;if(!layers[activeLayer].channels.includes(n))layers[activeLayer].channels.push(n);persist();renderLayers();toast('Канал добавлен')}
 function removeLast(){layers[activeLayer].channels.pop();persist();renderLayers();toast('Последний канал удалён')}
-render();renderLayers();
+render();renderLayers();renderChannelPage();
 
 /* Independent simulated signal indication for every visible channel.
    Replaced by real X32 meter data when OSC input is implemented. */
