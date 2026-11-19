@@ -69,6 +69,60 @@ input.fader::-webkit-slider-thumb{width:31px;height:43px;margin-top:-20px;border
 /* Landscape console layout: use the complete available screen */
 @media (orientation:landscape){html,body{width:100%;height:100%;min-height:100%;margin:0}body{height:100dvh;overflow:hidden;display:flex;flex-direction:column}header{flex:0 0 auto;padding:4px 8px}.top{gap:5px;flex-wrap:nowrap}.brand{font-size:13px}.top button{padding:5px 8px;font-size:10px}.tap{min-width:48px}.subbar{gap:4px;padding:4px 0}.subbar button{padding:5px 7px;font-size:9px}main{flex:1 1 auto;min-height:0;overflow:auto;padding:6px}.channels{grid-template-columns:repeat(16,minmax(0,1fr));gap:4px}.channel{padding:4px 2px}.fader-area{height:clamp(115px,34dvh,230px)}input.fader{width:clamp(125px,18vw,210px)}.ch-name{font-size:9px}.ch-buttons button{font-size:8px;padding:5px 0;min-height:25px}}
 @media (orientation:landscape) and (max-height:500px){header{padding:2px 6px}.brand{font-size:11px}.top button{padding:4px 6px}.subbar{padding:2px 0}main{padding:3px}.fader-area{height:clamp(95px,30dvh,150px)}.channel{padding:3px 2px}}
+
+/* Vintage analog-console faders and LCD scribble strips */
+.channel{
+ background:linear-gradient(90deg,#11171b 0%,#30383b 8%,#20282b 18%,#171e22 50%,#30383b 92%,#11171b 100%);
+ border:1px solid #596064;border-radius:3px;
+ box-shadow:inset 1px 0 #ffffff18,inset -1px 0 #000b,0 2px 5px #0009;
+}
+.ch-head{
+ height:48px;margin:0 1px 5px;padding:4px 3px 3px;
+ display:flex;flex-direction:column;justify-content:center;align-items:center;
+ background:linear-gradient(180deg,#17211d,#283b2e 48%,#18251d);
+ border:2px solid #090e0b;border-radius:2px;
+ box-shadow:inset 0 0 0 1px #81917c55,inset 0 0 12px #a5d18b22,0 1px 2px #000;
+ text-align:center;
+}
+.ch-num{font:700 8px/1.1 ui-monospace,monospace;color:#a8c89a;letter-spacing:.08em;text-shadow:0 0 4px #9cdb82}
+.ch-name{
+ width:100%;font:800 11px/1.15 ui-monospace,monospace;color:#e2f1c8;
+ letter-spacing:.03em;text-shadow:0 0 5px #b7ef8b;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;
+}
+.fader-area{
+ height:clamp(150px,28vh,250px);margin:3px 0 4px;overflow:hidden;
+ border:1px solid #090d0f;border-radius:2px;
+ background:linear-gradient(90deg,#080c0e 0%,#1c2529 12%,#10171a 50%,#1c2529 88%,#080c0e 100%);
+ box-shadow:inset 0 0 9px #000, inset 0 1px #ffffff12;
+}
+.fader-area:before{
+ content:"";position:absolute;left:50%;top:7px;bottom:7px;width:9px;transform:translateX(-50%);
+ border-radius:5px;background:linear-gradient(90deg,#050708,#394247 38%,#080b0d 75%);
+ border:1px solid #465158;box-shadow:inset 0 0 4px #000,0 0 2px #000;
+ pointer-events:none;
+}
+.scale{left:4px;color:#b5b7a8;text-shadow:0 1px 2px #000;font:8px ui-monospace,monospace}
+input.fader{
+ width:clamp(145px,18vw,215px);height:32px;z-index:2;
+}
+input.fader::-webkit-slider-runnable-track{
+ height:5px;background:linear-gradient(180deg,#070a0b,#596267 45%,#111719);
+ border:1px solid #778084;border-radius:1px;box-shadow:0 1px 2px #000;
+}
+input.fader::-webkit-slider-thumb{
+ -webkit-appearance:none;width:34px;height:43px;margin-top:-20px;border-radius:3px;
+ background:linear-gradient(180deg,#e2e2d8 0%,#8f9998 13%,#d5d5c9 27%,#737d7d 49%,#c5c8bd 73%,#5c6667 100%);
+ border:1px solid #e1e1d7;
+ box-shadow:0 3px 5px #000e,inset 0 1px 2px #fff,inset 0 -2px 3px #343b3c;
+}
+input.fader::-moz-range-track{height:5px;background:linear-gradient(180deg,#070a0b,#596267,#111719);border:1px solid #778084}
+input.fader::-moz-range-thumb{
+ width:34px;height:43px;border-radius:3px;
+ background:linear-gradient(180deg,#e2e2d8,#8f9998 20%,#d5d5c9 45%,#737d7d 65%,#c5c8bd);
+ border:1px solid #e1e1d7;box-shadow:0 3px 5px #000e,inset 0 1px 2px #fff;
+}
+.db{font:700 10px ui-monospace,monospace;color:#d5d0b7;text-shadow:0 1px 2px #000}
 </style>
 </head>
 <body>
