@@ -442,7 +442,7 @@ function channelDefaults(){return {on:true,gain:24,hpfOn:true,hpf:120,phase:fals
 function currentChannelState(){if(!channelState[selected])channelState[selected]=channelDefaults();return channelState[selected]}
 function saveChannelState(){localStorage.setItem('x32tp_channel_state',JSON.stringify(channelState))}
 function channelControl(label,key,value,min,max,step,unit){return '<div class="channel-control"><label>'+label+'</label><output id="out-'+key+'">'+value+'</output><input type="range" min="'+min+'" max="'+max+'" step="'+step+'" value="'+value+'" oninput="setChannelValue(\''+key+'\',this.value,\''+unit+'\')"><span class="unit">'+unit+'</span></div>'}
-function setChannelValue(k,v,u){let n=Number(v);currentChannelState()[k]=n;saveChannelState();let o=document.getElementById('out-'+k);if(o)o.textContent=(n>0&&u==='dB'?'+':'')+n}
+function setChannelValue(k,v,u){let n=Number(v);currentChannelState()[k]=n;saveChannelState();let o=document.getElementById('out-'+k);if(o)o.textContent=(n>0&&u==='dB'?'+':'')+n;if(k==='hpf')drawEqCurve(currentChannelState())}
 function channelToggle(label,key){let on=!!currentChannelState()[key];return '<div class="channel-control"><div class="toggle-line"><label>'+label+'</label><button class="'+(on?'active':'')+'" onclick="toggleChannelBlock(\''+key+'\')">'+(on?'ON':'OFF')+'</button></div></div>'}
 function toggleChannelBlock(k){let s=currentChannelState();s[k]=!s[k];saveChannelState();renderChannelPage()}
 function channelTab(p,btn){channelPage=p;document.querySelectorAll('.channel-tabs button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');renderChannelPage()}
