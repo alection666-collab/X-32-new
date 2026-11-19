@@ -1,0 +1,19 @@
+{
+  "name": "X32 TOUCH PRO",
+  "short_name": "X32 TOUCH PRO",
+  "description": "Touch mixer interface for Behringer X32",
+  "start_url": "/X-32-new/",
+  "scope": "/X-32-new/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0b1117",
+  "theme_color": "#111820",
+  "icons": [
+    {
+      "src": "/X-32-new/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
