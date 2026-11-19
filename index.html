@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#111820">
-<title>X32 TOUCH PRO — Prototype</title>
+<title>X32 TOUCH PRO v0.2</title>
 <style>
 :root{--bg:#0b1117;--panel:#151e27;--panel2:#1c2833;--line:#30404d;--text:#e7edf2;--muted:#8fa0ad;--cyan:#35c6d4;--yellow:#f4ca42;--red:#ef5555;--green:#55cf87}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#0a1016,#111b24);color:var(--text);font:14px/1.25 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow-x:hidden;touch-action:pan-y}
@@ -37,6 +37,34 @@ input.fader::-moz-range-track{height:4px;background:#52616b;border-radius:5px}in
 @media(min-width:900px){.channels{grid-template-columns:repeat(16,minmax(55px,1fr))}.channel{padding:5px 3px}.fader-area{height:240px}.channels .ch-name{font-size:10px}.channels .fader{width:205px}}
 @media(max-width:650px){main{padding:7px}.channels{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.fader-area{height:185px}.channel{padding:5px 4px}.param-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.brand{font-size:14px}.top{gap:5px}.top button{padding:7px 8px}}
 @media(orientation:portrait) and (min-width:651px){.channels{grid-template-columns:repeat(8,minmax(0,1fr))}}
+
+/* X32 TOUCH PRO v0.2 — Mixer refinement */
+.mixer-wrap{padding:7px;background:linear-gradient(145deg,#202d37,#0c1319);border-color:#52616c}
+.channels{gap:5px}
+.channel{padding:6px 4px 7px;border-color:#52616b;background:linear-gradient(180deg,#34434e 0%,#202d37 17%,#111a21 100%);box-shadow:inset 0 1px #ffffff20,0 3px 8px #0008}
+.channel.selected{outline:2px solid #4bd8e4;box-shadow:0 0 12px #35c6d455,inset 0 1px #ffffff20}
+.ch-head{height:43px;border-bottom:1px solid #5a6b76;cursor:pointer}
+.ch-num{font:800 10px ui-monospace,monospace;color:#b8c7d0}
+.ch-name{font-size:10px;letter-spacing:.025em;color:#f0f5f7}
+.meter{height:9px;margin:6px 2px 5px;border:1px solid #53636d;background:repeating-linear-gradient(90deg,#091016 0 7px,#202a31 7px 8px);border-radius:3px}
+.meter i{width:0;height:100%;background:linear-gradient(90deg,#23b765 0 62%,#b8d83e 72%,#edbd37 88%,#e64b45 100%);box-shadow:0 0 7px #43d98788;transition:width .18s}
+.pan-mini{height:15px;font:700 9px ui-monospace,monospace;color:#aebdc6}
+.fader-area{height:220px;margin:2px 0 4px;border:1px solid #26343e;background:linear-gradient(90deg,#0b1116,#1d2932 50%,#0b1116);overflow:hidden}
+.scale{left:4px;top:7px;bottom:7px;font:8px ui-monospace,monospace;color:#a1b0b9}
+input.fader{width:190px;height:30px}
+input.fader::-webkit-slider-runnable-track{height:5px;background:linear-gradient(90deg,#090d10,#87949b);border:1px solid #a0adb4}
+input.fader::-webkit-slider-thumb{width:31px;height:43px;margin-top:-20px;border-radius:4px;background:linear-gradient(90deg,#596873 0%,#dfe6e9 18%,#87969e 43%,#f2f5f6 66%,#53616a 100%);border:1px solid #f3f7f8;box-shadow:0 3px 7px #000d,inset 0 1px #fff}
+.db{font:800 10px ui-monospace,monospace;color:#e8f0f3;height:18px;padding-top:1px}
+.ch-buttons{gap:4px}
+.ch-buttons button{font-size:9px;padding:8px 1px;min-height:31px;border-radius:4px;letter-spacing:.06em}
+.mute,.solo{background:linear-gradient(#35434c,#202b33)}
+.mute.on{background:linear-gradient(#ff7770,#a52e2e);box-shadow:0 0 9px #e34a4a66}
+.solo.on{background:linear-gradient(#ffe16b,#a67d17);box-shadow:0 0 9px #e4bb3b66}
+.ch-bottom{font:800 8px ui-monospace,monospace;color:#9fb0ba;margin-top:6px}
+@media(min-width:900px){.channels{grid-template-columns:repeat(16,minmax(0,1fr));gap:4px}.channel{padding:5px 3px 7px}.fader-area{height:clamp(205px,28vh,290px)}input.fader{width:clamp(180px,22vw,245px)}.ch-name{font-size:9px}.ch-buttons button{font-size:8px;padding:8px 0}}
+@media(max-width:899px) and (min-width:651px){.channels{grid-template-columns:repeat(8,minmax(0,1fr))}}
+@media(max-width:650px){.channels{grid-template-columns:repeat(4,minmax(0,1fr))}.fader-area{height:185px}}
+
 </style>
 </head>
 <body>
@@ -57,12 +85,12 @@ input.fader::-moz-range-track{height:4px;background:#52616b;border-radius:5px}in
   <button onclick="setBank(40,this)">BUS 1–8</button>
   <button onclick="setBank(48,this)">BUS 9–16</button>
   <button onclick="setBank(56,this)">DCA / MAIN</button>
-  <button class="grow" onclick="toast('Сейчас работает демонстрационный интерфейс')">DEMO</button>
+  <button class="grow" onclick="toast('Демо-интерфейс: уровни пока симулируются')">DEMO</button>
  </div>
 </header>
 <main>
  <div class="toolbar">
-  <span class="section-label">MIXER SURFACE</span>
+  <span class="section-label">MIXER SURFACE · V0.2</span>
   <button class="active" onclick="showSection('mixer',this)">MIX</button>
   <button onclick="showSection('channel',this)">CHANNEL</button>
   <button onclick="showSection('bus',this)">BUS / SENDS</button>
@@ -110,10 +138,31 @@ input.fader::-moz-range-track{height:4px;background:#52616b;border-radius:5px}in
 const names=['KICK','SNARE','HH','TOM 1','TOM 2','OH L','OH R','BASS','GTR 1','GTR 2','KEY L','KEY R','VOX 1','VOX 2','VOX 3','PLAYBACK'];
 let bank=0,selected=0,taps=[],layers=JSON.parse(localStorage.getItem('x32tp_layers')||'null')||[{name:'FOH',channels:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]},{name:'VOCALS',channels:[12,13,14]},{name:'DRUMS',channels:[0,1,2,3,4,5,6]}],activeLayer=0;
 function channelName(n){if(n<32)return names[n%16]||'INPUT '+(n+1);if(n<48)return 'AUX '+(n-31);if(n<64)return n<56?'BUS '+(n-39):'DCA '+(n-55);return 'MAIN'}
-function render(){let root=document.getElementById('channels');root.innerHTML='';let arr=Array.from({length:16},(_,i)=>bank+i);if(bank>=56)arr=Array.from({length:8},(_,i)=>56+i).concat(Array.from({length:8},(_,i)=>64+i));
-arr.forEach((n,i)=>{let el=document.createElement('div');el.className='channel'+(selected===n?' selected':'');let nm=channelName(n);el.innerHTML=`<div class="ch-head" onclick="selectCh(${n})"><div class="ch-num">${String(n+1).padStart(2,'0')}</div><div class="ch-name">${nm}</div></div><div class="meter"><i style="width:${Math.max(2,Math.random()*72)}%"></i></div><div class="pan-mini">PAN · ${i%3===0?'L':i%3===1?'C':'R'}</div><div class="fader-area"><div class="scale"><span>+10</span><span>0</span><span>-10</span><span>-20</span><span>-40</span><span>∞</span></div><input aria-label="${nm} fader" class="fader" type="range" min="-90" max="10" value="${faderVals[n]??-5}" oninput="faderVals[${n}]=+this.value;this.parentNode.nextElementSibling.textContent=(this.value>0?'+':'')+this.value+' dB'"></div><div class="db">${faderVals[n]??'-5'} dB</div><div class="ch-buttons"><button class="mute" onclick="this.classList.toggle('on');event.stopPropagation()">MUTE</button><button class="solo" onclick="this.classList.toggle('on');event.stopPropagation()">SOLO</button></div><div class="ch-bottom">SEL · ${i+1}</div>`;root.appendChild(el)});
+function render(){
+ let root=document.getElementById('channels');root.innerHTML='';
+ let arr=Array.from({length:16},(_,i)=>bank+i);
+ if(bank>=56)arr=Array.from({length:8},(_,i)=>56+i).concat(Array.from({length:8},(_,i)=>64+i));
+ arr.forEach((n,i)=>{
+  let el=document.createElement('div');
+  el.className='channel'+(selected===n?' selected':'');
+  let nm=channelName(n), val=faderVals[n]??-5, meterLevel=18+((n*17)%63);
+  el.innerHTML=`<div class="ch-head" onclick="selectCh(${n})"><div class="ch-num">${n<32?'CH '+String(n+1).padStart(2,'0'):n<48?'AUX '+String(n-31).padStart(2,'0'):n<64?'BUS '+String(n-39).padStart(2,'0'):'DCA / MAIN'}</div><div class="ch-name">${nm}</div></div>
+   <div class="meter"><i style="width:${meterLevel}%"></i></div>
+   <div class="pan-mini">PAN · ${panVals[n]??(i%3===0?'L':i%3===1?'C':'R')}</div>
+   <div class="fader-area"><div class="scale"><span>+10</span><span>0</span><span>−10</span><span>−20</span><span>−40</span><span>−∞</span></div>
+   <input aria-label="${nm} fader" class="fader" type="range" min="-90" max="10" step="0.1" value="${val}" oninput="faderVals[${n}]=+this.value;localStorage.setItem('x32tp_faders',JSON.stringify(faderVals));this.parentNode.nextElementSibling.textContent=(this.value>0?'+':'')+(+this.value).toFixed(1)+' dB'"></div>
+   <div class="db">${val>0?'+':''}${Number(val).toFixed(1)} dB</div>
+   <div class="ch-buttons"><button class="mute ${muteVals[n]?'on':''}" onclick="toggleStrip(${n},'mute',this);event.stopPropagation()">MUTE</button><button class="solo ${soloVals[n]?'on':''}" onclick="toggleStrip(${n},'solo',this);event.stopPropagation()">SOLO</button></div>
+   <div class="ch-bottom">SELECT · ${i+1}</div>`;
+  root.appendChild(el);
+ });
 }
-let faderVals={};function setBank(n,btn){bank=n;render();document.querySelectorAll('.subbar button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active')}
+let faderVals=JSON.parse(localStorage.getItem('x32tp_faders')||'{}');
+let muteVals=JSON.parse(localStorage.getItem('x32tp_mutes')||'{}');
+let soloVals=JSON.parse(localStorage.getItem('x32tp_solos')||'{}');
+let panVals={};
+function toggleStrip(n,type,btn){let store=type==='mute'?muteVals:soloVals;store[n]=!store[n];btn.classList.toggle('on',store[n]);localStorage.setItem(type==='mute'?'x32tp_mutes':'x32tp_solos',JSON.stringify(store))}
+function setBank(n,btn){bank=n;render();document.querySelectorAll('.subbar button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active')}
 function selectCh(n){selected=n;document.getElementById('channelTitle').textContent='CHANNEL '+String(n+1).padStart(2,'0')+' · '+channelName(n);render();showSection('channel')}
 function showSection(s,btn){['channelPanel','busPanel','fxPanel'].forEach(id=>document.getElementById(id).classList.remove('show'));if(s==='channel')document.getElementById('channelPanel').classList.add('show');if(s==='bus')document.getElementById('busPanel').classList.add('show');if(s==='fx')document.getElementById('fxPanel').classList.add('show');if(btn){document.querySelectorAll('.toolbar button').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}}
 function togglePanel(id){document.getElementById(id).classList.toggle('show')}
