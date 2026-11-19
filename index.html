@@ -323,6 +323,16 @@ input.fader::-moz-range-thumb{
 .eq-band input[type=range]{width:100%;min-width:80px;accent-color:var(--cyan)}
 .eq-band select{background:#17232c;color:var(--text);border:1px solid #435461;border-radius:5px;padding:7px}
 @media(max-width:650px){.eq-settings-row{display:grid;grid-template-columns:1fr}.eq-settings-row #eqSelectedSettings{min-width:0}.eq-band{grid-template-columns:1fr auto}.eq-band input[type=range]{grid-column:1/-1}}
+/* Fader travel: keep the complete cap visible at both mechanical endpoints.
+   The slider's rotated length is based on viewport height, not channel width. */
+.fader-area{overflow:hidden}
+input.fader{width:clamp(70px,calc(28vh - 58px),180px)!important;max-width:none}
+@media(orientation:landscape){
+ input.fader{width:clamp(65px,calc(34dvh - 58px),180px)!important}
+}
+@media(orientation:landscape) and (max-height:500px){
+ input.fader{width:clamp(55px,calc(30dvh - 48px),120px)!important}
+}
 </style>
 </head>
 <body>
@@ -333,7 +343,7 @@ input.fader::-moz-range-thumb{
   <button id="connectBtn" onclick="demoConnect()">CONNECT</button>
   <button class="tap" id="tapBtn">TAP</button>
   <div class="tempo"><b id="bpm">— BPM</b><span id="ms">— ms</span></div>
-  <button onclick="togglePanel('layersPanel')">LAYERS</button>
+  
   <button onclick="togglePanel('settingsPanel')">⚙</button><button id="fullBtn" onclick="toggleFullscreen()" aria-label="Полный экран">⛶</button>
  </div>
  <div class="subbar">
@@ -379,13 +389,6 @@ input.fader::-moz-range-thumb{
  <section id="scenesPanel" class="panel"><h3>SCENES · LOCAL WORKSPACE</h3><div class="edit-row"><input id="sceneName" placeholder="Название сцены"><button onclick="saveLocalScene()">SAVE SCENE</button><button onclick="exportLocalScenes()">EXPORT JSON</button><input id="sceneImport" type="file" accept="application/json" onchange="importLocalScenes(event)"></div><div id="sceneList" class="layer-list" style="margin-top:10px"></div><p class="note">Это локальные снимки состояния интерфейса, не сцены X32. Recall на физический пульт будет доступен после реализации OSC и проверки совместимости.</p></section>
  <section id="metersPanel" class="panel"><h3>METERS · SIGNAL OVERVIEW</h3><div class="param-grid"><div class="param"><label>INPUT METERS</label><strong>32 CHANNELS</strong><p class="note">Показания сейчас симулируются.</p></div><div class="param"><label>BUS METERS</label><strong>16 BUSES</strong><p class="note">Реальные уровни потребуют OSC meter subscription.</p></div><div class="param"><label>MAIN / MATRIX</label><strong>LCR + 6 MATRIX</strong><p class="note">Данные пока недоступны.</p></div><div class="param"><label>PEAK HOLD</label><button onclick="toast('Peak hold будет включён вместе с реальными meters')">RESET PEAKS</button></div></div></section>
  <section id="monitorPanel" class="panel"><h3>MONITOR · SOLO / TALKBACK</h3><div class="param-grid"><div class="param"><label>SOLO MODE</label><select><option>PFL</option><option>AFL</option><option>IN PLACE</option></select></div><div class="param"><label>SOLO LEVEL</label><input type="range" min="-60" max="10" value="0"></div><div class="param"><label>TALKBACK A</label><button onclick="toast('Talkback A: OSC не подключён')">TALK A</button></div><div class="param"><label>TALKBACK B</label><button onclick="toast('Talkback B: OSC не подключён')">TALK B</button></div></div><p class="note">Мониторные параметры пока не передаются на консоль.</p></section>
- <section id="layersPanel" class="panel show">
-  <h3>CUSTOM LAYERS · РЕДАКТОР СЛОЁВ</h3>
-  <div class="layer-list" id="layerList"></div>
-  <div class="edit-row"><input id="layerName" placeholder="Название нового слоя"><button onclick="addLayer()">＋ СОЗДАТЬ СЛОЙ</button><button onclick="saveLayer()">СОХРАНИТЬ</button></div>
-  <div class="edit-row" style="margin-top:8px"><select id="addChannel"><option value="0">CH 1</option></select><button onclick="addToLayer()">ДОБАВИТЬ КАНАЛ</button><button onclick="removeLast()">УБРАТЬ ПОСЛЕДНИЙ</button></div>
-  <p class="note">В прототипе можно создавать слои и собирать их из каналов. Данные сохраняются в браузере этого устройства. Перетаскивание элементов и полноценная свободная компоновка появятся в следующей итерации.</p>
- </section>
  <section id="settingsPanel" class="panel"><h3>SETTINGS</h3><div class="param-grid">
   <div class="param"><label>CONSOLE PROFILE</label><strong>X32 FOH</strong><p class="note">192.168.2.163 · сохранённый профиль</p></div>
   <div class="param"><label>DISPLAY</label><strong>ADAPTIVE</strong><p class="note">Автоматическая адаптация под экран и ориентацию.</p></div>
@@ -573,14 +576,3 @@ setInterval(animateMeters,280);
 
 </script>
 </body></html>
-
-/* Fader travel: keep the complete cap visible at both mechanical endpoints.
-   The slider's rotated length is based on viewport height, not channel width. */
-.fader-area{overflow:hidden}
-input.fader{width:clamp(70px,calc(28vh - 58px),180px)!important;max-width:none}
-@media(orientation:landscape){
- input.fader{width:clamp(65px,calc(34dvh - 58px),180px)!important}
-}
-@media(orientation:landscape) and (max-height:500px){
- input.fader{width:clamp(55px,calc(30dvh - 48px),120px)!important}
-}
