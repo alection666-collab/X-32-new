@@ -329,7 +329,7 @@ function render(){
   let nm=channelName(n), val=faderVals[n]??-5, meterLevel=18+((n*17)%63);
   el.innerHTML=`<div class="ch-head" onclick="selectCh(${n})" ondblclick="openChannelConfig(${n});event.preventDefault() " title="Двойное нажатие — конфигурация канала"><div class="ch-num">${n<32?'CH '+String(n+1).padStart(2,'0'):n>=32&&n<38?'AUX '+String(n-31).padStart(2,'0'):n>=40&&n<56?'BUS '+String(n-39).padStart(2,'0'):n<64?'DCA '+String(n-55).padStart(2,'0'):'MAIN'}</div><div class="ch-name">${nm}</div></div>
    <div class="meter" title="Уровень канала · DEMO"><i id="meter-${n}" style="width:${meterLevel}%"></i></div>
-   <div class="pan-mini">PAN · ${panVals[n]??(i%3===0?'L':i%3===1?'C':'R')}</div>
+   <div class="pan-mini">PAN · ${panVals[n]??'C'}</div>
    <div class="fader-area"><div class="scale"><span>+10</span><span>0</span><span>−10</span><span>−20</span><span>−40</span><span>−∞</span></div>
    <input aria-label="${nm} fader" class="fader" type="range" min="-90" max="10" step="0.1" value="${val}" oninput="faderVals[${n}]=+this.value;localStorage.setItem('x32tp_faders',JSON.stringify(faderVals));this.parentNode.nextElementSibling.textContent=(this.value>0?'+':'')+(+this.value).toFixed(1)+' dB'"></div>
    <div class="db">${val>0?'+':''}${Number(val).toFixed(1)} dB</div>
