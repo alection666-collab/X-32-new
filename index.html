@@ -333,6 +333,9 @@ input.fader{width:clamp(70px,calc(28vh - 58px),180px)!important;max-width:none}
 @media(orientation:landscape) and (max-height:500px){
  input.fader{width:clamp(55px,calc(30dvh - 48px),120px)!important}
 }
+
+/* Automatic immersive mixer layout on landscape rotation */
+@media (orientation:landscape){html.landscape-auto,html.landscape-auto body{width:100%;height:100%;min-height:100%;overscroll-behavior:none}html.landscape-auto body{height:100dvh;overflow:hidden;display:flex;flex-direction:column}html.landscape-auto header{flex:0 0 auto}html.landscape-auto main{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain}}
 </style>
 </head>
 <body>
@@ -574,5 +577,9 @@ function animateMeters(){
 }
 setInterval(animateMeters,280);
 
+
+/* Auto-adapt mixer layout after device rotation. */
+function syncLandscapeMode(){const landscape=window.matchMedia('(orientation: landscape)').matches;document.documentElement.classList.toggle('landscape-auto',landscape)}
+window.addEventListener('orientationchange',()=>setTimeout(syncLandscapeMode,180));window.addEventListener('resize',syncLandscapeMode);if(window.screen&&screen.orientation&&screen.orientation.addEventListener)screen.orientation.addEventListener('change',syncLandscapeMode);syncLandscapeMode();
 </script>
 </body></html>
