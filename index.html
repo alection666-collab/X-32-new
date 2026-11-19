@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#111820">
-<title>X32 TOUCH PRO v0.2</title>
+<title>X32 TOUCH PRO v0.2.1</title>
 <style>
 :root{--bg:#0b1117;--panel:#151e27;--panel2:#1c2833;--line:#30404d;--text:#e7edf2;--muted:#8fa0ad;--cyan:#35c6d4;--yellow:#f4ca42;--red:#ef5555;--green:#55cf87}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#0a1016,#111b24);color:var(--text);font:14px/1.25 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow-x:hidden;touch-action:pan-y}
@@ -135,9 +135,9 @@ input.fader::-webkit-slider-thumb{width:31px;height:43px;margin-top:-20px;border
 </main>
 <div class="toast" id="toast"></div>
 <script>
-const names=['KICK','SNARE','HH','TOM 1','TOM 2','OH L','OH R','BASS','GTR 1','GTR 2','KEY L','KEY R','VOX 1','VOX 2','VOX 3','PLAYBACK'];
+let inputNames=JSON.parse(localStorage.getItem('x32tp_input_names')||'null')||Array.from({length:32},(_,i)=>'CH '+(i+1));
 let bank=0,selected=0,taps=[],layers=JSON.parse(localStorage.getItem('x32tp_layers')||'null')||[{name:'FOH',channels:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]},{name:'VOCALS',channels:[12,13,14]},{name:'DRUMS',channels:[0,1,2,3,4,5,6]}],activeLayer=0;
-function channelName(n){if(n<32)return names[n%16]||'INPUT '+(n+1);if(n<48)return 'AUX '+(n-31);if(n<64)return n<56?'BUS '+(n-39):'DCA '+(n-55);return 'MAIN'}
+function channelName(n){if(n<32)return inputNames[n]||'CH '+(n+1);if(n<48)return 'AUX '+(n-31);if(n<64)return n<56?'BUS '+(n-39):'DCA '+(n-55);return 'MAIN'}
 function render(){
  let root=document.getElementById('channels');root.innerHTML='';
  let arr=Array.from({length:16},(_,i)=>bank+i);
@@ -166,7 +166,7 @@ function setBank(n,btn){bank=n;render();document.querySelectorAll('.subbar butto
 function selectCh(n){selected=n;document.getElementById('channelTitle').textContent='CHANNEL '+String(n+1).padStart(2,'0')+' · '+channelName(n);render();showSection('channel')}
 function showSection(s,btn){['channelPanel','busPanel','fxPanel'].forEach(id=>document.getElementById(id).classList.remove('show'));if(s==='channel')document.getElementById('channelPanel').classList.add('show');if(s==='bus')document.getElementById('busPanel').classList.add('show');if(s==='fx')document.getElementById('fxPanel').classList.add('show');if(btn){document.querySelectorAll('.toolbar button').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}}
 function togglePanel(id){document.getElementById(id).classList.toggle('show')}
-function demoConnect(){toast('Демо: сетевое подключение добавим после проверки на ноутбуке')}
+function demoConnect(){toast('Пока DEMO: после подключения X32 названия каналов будут считаны с консоли')}
 function toast(t){let x=document.getElementById('toast');x.textContent=t;x.classList.add('show');clearTimeout(window.tt);window.tt=setTimeout(()=>x.classList.remove('show'),2300)}
 document.getElementById('tapBtn').addEventListener('click',()=>{let now=Date.now();taps=taps.filter(t=>now-t<2500);taps.push(now);if(taps.length>1){let dif=[];for(let i=1;i<taps.length;i++)dif.push(taps[i]-taps[i-1]);let avg=dif.reduce((a,b)=>a+b,0)/dif.length;let bpm=Math.round(60000/avg);document.getElementById('bpm').textContent=bpm+' BPM';document.getElementById('ms').textContent=(60000/bpm).toFixed(1)+' ms'}else{document.getElementById('bpm').textContent='TAP…';document.getElementById('ms').textContent='ещё раз'}})
 function persist(){localStorage.setItem('x32tp_layers',JSON.stringify(layers))}
