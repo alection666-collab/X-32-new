@@ -285,10 +285,12 @@ input.fader::-moz-range-thumb{
  <div class="subbar">
   <button class="active" onclick="setBank(0,this)">CH 1–16</button>
   <button onclick="setBank(16,this)">CH 17–32</button>
-  <button onclick="setBank(32,this)">AUX / USB</button>
+  <button onclick="setBank(32,this)">AUX IN</button>
   <button onclick="setBank(40,this)">BUS 1–8</button>
   <button onclick="setBank(48,this)">BUS 9–16</button>
-  <button onclick="setBank(56,this)">DCA / MAIN</button>
+  <button onclick="setBank(56,this)">DCA 1–8</button>
+  <button onclick="setBank(64,this)">FX RETURNS</button>
+  <button onclick="setBank(72,this)">MAIN / MATRIX</button>
   <button class="grow" onclick="toast('Демо-интерфейс: уровни пока симулируются')">DEMO</button>
  </div>
 </header>
@@ -307,12 +309,12 @@ input.fader::-moz-range-thumb{
  <div id="mixerView" class="mixer-wrap">
   <div class="channels" id="channels"></div>
   <div class="bottom-dock">
-   <div class="dock-group"><button onclick="setBank(0)">◀ BANK</button><button onclick="setBank(Math.min(bank+8,56))">BANK ▶</button><button onclick="togglePanel('layersPanel')">＋ CUSTOM LAYER</button></div>
-   <div class="dock-group"><button onclick="toast('DCA 1–8 · демо')">DCA 1–8</button><button onclick="toast('MAIN L/R · демо')">MAIN L/R</button><button onclick="toast('MONO/C · демо')">MONO/C</button></div>
+   <div class="dock-group"><button onclick="setBank(0)">◀ FIRST BANK</button><button onclick="setBank(Math.min(bank+16,72))">NEXT BANK ▶</button><button onclick="togglePanel('layersPanel')">＋ CUSTOM LAYER</button><button id="sofToggle" onclick="toggleSendsMode()">SENDS ON FADER: OFF</button></div>
+   <div class="dock-group"><button onclick="toggleMuteGroup(1)">MUTE GRP 1</button><button onclick="toggleMuteGroup(2)">MUTE GRP 2</button><button onclick="toggleMuteGroup(3)">MUTE GRP 3</button><button onclick="toggleMuteGroup(4)">MUTE GRP 4</button><button onclick="toggleMuteGroup(5)">MUTE GRP 5</button><button onclick="toggleMuteGroup(6)">MUTE GRP 6</button></div>
   </div>
  </div>
  <section id="channelPanel" class="panel channel-editor"><div class="channel-editor-head"><div><div class="section-label">SELECTED CHANNEL</div><h3 id="channelTitle">CHANNEL 01 · INPUT</h3></div><div class="channel-actions"><button id="channelOn" class="active" onclick="toggleChannelBlock('on')">CHANNEL ON</button><button onclick="resetChannel()">RESET</button></div></div><div class="channel-tabs"><button class="active" onclick="channelTab('preamp',this)">PREAMP</button><button onclick="channelTab('gate',this)">GATE</button><button onclick="channelTab('eq',this)">4-BAND EQ</button><button onclick="channelTab('comp',this)">COMP</button><button onclick="channelTab('pan',this)">PAN / WIDTH</button></div><div id="channelControls"></div><p class="note">Настройки сохраняются локально в браузере. Передача параметров в физический X32 через OSC пока не подключена.</p></section>
- <section id="busPanel" class="panel"><h3>BUS / SENDS ON FADER</h3><div class="layer-list"><button>BUS 1</button><button>BUS 2</button><button>BUS 3</button><button>BUS 4</button><button>BUS 5</button><button>BUS 6</button><button>BUS 7</button><button>BUS 8</button><button>BUS 9–16</button></div><p class="note">Выбор шины и режим Sends on Fader будут подключены к OSC на следующем этапе.</p></section>
+ <section id="busPanel" class="panel"><h3>BUS / SENDS ON FADER</h3><div class="layer-list"><button onclick="selectSendBus(1)">BUS 1</button><button onclick="selectSendBus(2)">BUS 2</button><button onclick="selectSendBus(3)">BUS 3</button><button onclick="selectSendBus(4)">BUS 4</button><button onclick="selectSendBus(5)">BUS 5</button><button onclick="selectSendBus(6)">BUS 6</button><button onclick="selectSendBus(7)">BUS 7</button><button onclick="selectSendBus(8)">BUS 8</button><button onclick="selectSendBus(9)">BUS 9</button><button onclick="selectSendBus(10)">BUS 10</button><button onclick="selectSendBus(11)">BUS 11</button><button onclick="selectSendBus(12)">BUS 12</button><button onclick="selectSendBus(13)">BUS 13</button><button onclick="selectSendBus(14)">BUS 14</button><button onclick="selectSendBus(15)">BUS 15</button><button onclick="selectSendBus(16)">BUS 16</button></div><div class="param-grid"><div class="param"><label>SELECTED SEND BUS</label><strong id="selectedSendBus">BUS 1</strong></div><div class="param"><label>SEND CONTROL</label><strong>LOCAL DEMO</strong></div></div><p class="note">Sends on Fader сейчас сохраняет демонстрационные уровни локально. Физический X32 пока не управляется.</p></section>
  <section id="fxPanel" class="panel"><h3>FX RACK · 8 SLOTS</h3><div class="layer-list"><button>FX 1 · DELAY</button><button>FX 2 · REVERB</button><button>FX 3 · CHORUS</button><button>FX 4 · EMPTY</button><button>FX 5 · EMPTY</button><button>FX 6 · EMPTY</button><button>FX 7 · EMPTY</button><button>FX 8 · EMPTY</button></div><p class="note">Кнопка TAP сверху рассчитывает темп и время четверти ноты. Передача значения в FX будет реализована после сетевого подключения.</p></section> 
  <section id="routingPanel" class="panel"><h3>ROUTING · DEMO EDITOR</h3><div class="param-grid">
   <div class="param"><label>INPUT SOURCE</label><select id="routeInput"><option>Local 1–32</option><option>AES50-A 1–48</option><option>AES50-B 1–48</option><option>Card 1–32</option></select></div>
@@ -341,20 +343,24 @@ input.fader::-moz-range-thumb{
 <script>
 let inputNames=JSON.parse(localStorage.getItem('x32tp_input_names')||'null')||Array.from({length:32},(_,i)=>'CH '+(i+1));
 let bank=0,selected=0,taps=[],layers=JSON.parse(localStorage.getItem('x32tp_layers')||'null')||[{name:'FOH',channels:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]},{name:'VOCALS',channels:[12,13,14]},{name:'DRUMS',channels:[0,1,2,3,4,5,6]}],activeLayer=0;
-function channelName(n){if(n<32)return inputNames[n]||'CH '+(n+1);if(n>=32&&n<38)return 'AUX '+(n-31);if(n>=40&&n<56)return 'BUS '+(n-39);if(n>=56&&n<64)return 'DCA '+(n-55);return 'MAIN'}
+function channelName(n){if(n>=0&&n<32)return inputNames[n]||'CH '+(n+1);if(n>=32&&n<38)return 'AUX '+(n-31);if(n>=40&&n<56)return 'BUS '+(n-39);if(n>=56&&n<64)return 'DCA '+(n-55);if(n>=64&&n<72)return 'FX RET '+(n-63);if(n===72)return 'MAIN L';if(n===73)return 'MAIN R';if(n===74)return 'MONO/C';if(n>=75&&n<81)return 'MATRIX '+(n-74);return 'UNASSIGNED'}
 function render(){
  let root=document.getElementById('channels');root.innerHTML='';
- let arr=bank===32?Array.from({length:6},(_,i)=>32+i):Array.from({length:16},(_,i)=>bank+i);
- if(bank>=56)arr=Array.from({length:8},(_,i)=>56+i).concat(Array.from({length:8},(_,i)=>64+i));
+ let arr;
+ if(bank===32)arr=Array.from({length:6},(_,i)=>32+i);
+ else if(bank===56)arr=Array.from({length:8},(_,i)=>56+i);
+ else if(bank===64)arr=Array.from({length:8},(_,i)=>64+i);
+ else if(bank===72)arr=Array.from({length:8},(_,i)=>72+i);
+ else arr=Array.from({length:16},(_,i)=>bank+i);
  arr.forEach((n,i)=>{
   let el=document.createElement('div');
   el.className='channel'+(selected===n?' selected':'');
-  let nm=channelName(n), val=faderVals[n]??-5, meterLevel=18+((n*17)%63);
-  el.innerHTML=`<div class="ch-head" onclick="selectCh(${n})" ondblclick="openChannelConfig(${n});event.preventDefault() " title="Двойное нажатие — конфигурация канала"><div class="ch-num">${n<32?'CH '+String(n+1).padStart(2,'0'):n>=32&&n<38?'AUX '+String(n-31).padStart(2,'0'):n>=40&&n<56?'BUS '+String(n-39).padStart(2,'0'):n<64?'DCA '+String(n-55).padStart(2,'0'):'MAIN'}</div><div class="ch-name">${nm}</div></div>
+  let nm=channelName(n), val=sendsMode&&n<32?(sendLevels[selectedSendBus+':'+n]??-10):(faderVals[n]??-5), meterLevel=18+((n*17)%63);
+  el.innerHTML=`<div class="ch-head" onclick="selectCh(${n})" ondblclick="openChannelConfig(${n});event.preventDefault() " title="Двойное нажатие — конфигурация канала"><div class="ch-num">${n<32?'CH '+String(n+1).padStart(2,'0'):n>=32&&n<38?'AUX '+String(n-31).padStart(2,'0'):n>=40&&n<56?'BUS '+String(n-39).padStart(2,'0'):n<64?'DCA '+String(n-55).padStart(2,'0'):n<72?'FX RET '+String(n-63).padStart(2,'0'):n===72?'MAIN L':n===73?'MAIN R':n===74?'MONO/C':'MATRIX '+String(n-74).padStart(2,'0')}</div><div class="ch-name">${nm}</div></div>
    
    <div class="pan-mini">PAN · ${panVals[n]??'C'}</div>
    <div class="fader-area"><div class="meter meter-vertical" title="Уровень канала · DEMO"><i id="meter-${n}" style="height:${meterLevel}%"></i></div><div class="scale"><span>+10</span><span>0</span><span>−10</span><span>−20</span><span>−40</span><span>−∞</span></div>
-   <input aria-label="${nm} fader" class="fader" type="range" min="-90" max="10" step="0.1" value="${val}" oninput="faderVals[${n}]=+this.value;localStorage.setItem('x32tp_faders',JSON.stringify(faderVals));this.parentNode.nextElementSibling.textContent=(this.value>0?'+':'')+(+this.value).toFixed(1)+' dB'"></div>
+   <input aria-label="${nm} fader" class="fader" type="range" min="-90" max="10" step="0.1" value="${val}" oninput="if(sendsMode&&${n}<32){sendLevels[selectedSendBus+':'+${n}]=+this.value;localStorage.setItem('x32tp_send_levels',JSON.stringify(sendLevels))}else{faderVals[${n}]=+this.value;localStorage.setItem('x32tp_faders',JSON.stringify(faderVals))}this.parentNode.nextElementSibling.textContent=(this.value>0?'+':'')+(+this.value).toFixed(1)+' dB'"></div>
    <div class="db">${val>0?'+':''}${Number(val).toFixed(1)} dB</div>
    <div class="ch-buttons"><button class="mute ${muteVals[n]?'on':''}" aria-label="MUTE" title="MUTE" onclick="toggleStrip(${n},'mute',this);event.stopPropagation()">M</button><button class="solo ${soloVals[n]?'on':''}" aria-label="SOLO" title="SOLO" onclick="toggleStrip(${n},'solo',this);event.stopPropagation()">S</button></div>
 `;
@@ -366,6 +372,12 @@ let muteVals=JSON.parse(localStorage.getItem('x32tp_mutes')||'{}');
 let soloVals=JSON.parse(localStorage.getItem('x32tp_solos')||'{}');
 let panVals={};
 function toggleStrip(n,type,btn){let store=type==='mute'?muteVals:soloVals;store[n]=!store[n];btn.classList.toggle('on',store[n]);localStorage.setItem(type==='mute'?'x32tp_mutes':'x32tp_solos',JSON.stringify(store))}
+let sendsMode=false,selectedSendBus=1;
+let muteGroups=JSON.parse(localStorage.getItem('x32tp_mute_groups')||'{}');
+let sendLevels=JSON.parse(localStorage.getItem('x32tp_send_levels')||'{}');
+function toggleSendsMode(){sendsMode=!sendsMode;let b=document.getElementById('sofToggle');if(b){b.textContent='SENDS ON FADER: '+(sendsMode?'BUS '+selectedSendBus:'OFF');b.classList.toggle('active',sendsMode)}toast(sendsMode?'Sends on Fader · BUS '+selectedSendBus+' · локально':'Sends on Fader выключен');render()}
+function selectSendBus(n){selectedSendBus=n;sendsMode=true;let label=document.getElementById('selectedSendBus');if(label)label.textContent='BUS '+n;let b=document.getElementById('sofToggle');if(b){b.textContent='SENDS ON FADER: BUS '+n;b.classList.add('active')}render()}
+function toggleMuteGroup(n){muteGroups[n]=!muteGroups[n];localStorage.setItem('x32tp_mute_groups',JSON.stringify(muteGroups));document.querySelectorAll('.dock-group button').forEach(b=>{if(b.textContent==='MUTE GRP '+n)b.classList.toggle('active',!!muteGroups[n])});toast('Mute Group '+n+' '+(muteGroups[n]?'ON':'OFF')+' · локально')}
 function setBank(n,btn){bank=n;render();document.querySelectorAll('.subbar button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active')}
 function selectCh(n){selected=n;render()}
 function openChannelConfig(n){selected=n;document.getElementById('channelTitle').textContent='CHANNEL '+String(n+1).padStart(2,'0')+' · '+channelName(n)+' · CONFIGURATION';render();showSection('channel');renderChannelPage();toast('Конфигурация '+channelName(n))}
