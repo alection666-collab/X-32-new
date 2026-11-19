@@ -476,7 +476,10 @@ function setBank(n,btn){bank=n;render();document.querySelectorAll('.subbar butto
 function selectCh(n){selected=n;render()}
 function openChannelConfig(n){selected=n;document.getElementById('channelTitle').textContent='CHANNEL '+String(n+1).padStart(2,'0')+' · '+channelName(n)+' · CONFIGURATION';render();showSection('channel');renderChannelPage();toast('Конфигурация '+channelName(n))}
 let channelPage='preamp',channelState=JSON.parse(localStorage.getItem('x32tp_channel_state')||'{}');
-function channelDefaults(){return {on:true,gain:24,hpfOn:true,hpf:120,phase:false,phantom:false,gateOn:false,gateThreshold:-45,gateRange:30,gateAttack:10,gateHold:80,gateRelease:200,eqOn:true,eq:[{on:true,type:'LOW SHELF',freq:80,gain:0,q:.7},{on:true,type:'LOW MID',freq:350,gain:0,q:1.2},{on:true,type:'HIGH MID',freq:2500,gain:0,q:1.2},{on:true,type:'HIGH SHELF',freq:10000,gain:0,q:.7}],compOn:false,threshold:-18,ratio:3,attack:10,release:120,knee:6,makeup:0,pan:0,width:100}}
+// Default input preamp gain: 0 dB on every channel. Migrate the previous untouched default (24 dB).
+for(let i=0;i<32;i++){if(!channelState[i])channelState[i]=channelDefaults();else if(Number(channelState[i].gain)===24)channelState[i].gain=0;}
+localStorage.setItem('x32tp_channel_state',JSON.stringify(channelState));
+function channelDefaults(){return {on:true,gain:0,hpfOn:true,hpf:120,phase:false,phantom:false,gateOn:false,gateThreshold:-45,gateRange:30,gateAttack:10,gateHold:80,gateRelease:200,eqOn:true,eq:[{on:true,type:'LOW SHELF',freq:80,gain:0,q:.7},{on:true,type:'LOW MID',freq:350,gain:0,q:1.2},{on:true,type:'HIGH MID',freq:2500,gain:0,q:1.2},{on:true,type:'HIGH SHELF',freq:10000,gain:0,q:.7}],compOn:false,threshold:-18,ratio:3,attack:10,release:120,knee:6,makeup:0,pan:0,width:100}}
 function currentChannelState(){if(!channelState[selected])channelState[selected]=channelDefaults();return channelState[selected]}
 function saveChannelState(){localStorage.setItem('x32tp_channel_state',JSON.stringify(channelState))}
 function channelControl(label,key,value,min,max,step,unit){return '<div class="channel-control"><label>'+label+'</label><output id="out-'+key+'">'+value+'</output><input type="range" min="'+min+'" max="'+max+'" step="'+step+'" value="'+value+'" oninput="setChannelValue(\''+key+'\',this.value,\''+unit+'\')"><span class="unit">'+unit+'</span></div>'}
