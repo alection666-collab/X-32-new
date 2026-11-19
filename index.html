@@ -490,6 +490,9 @@ function removeLast(){layers[activeLayer].channels.pop();persist();renderLayers(
 const channelMeta=JSON.parse(localStorage.getItem('x32tp_channel_meta')||'{}'),channelIcons=['🎤','🎸','🎹','🥁','🎷','🎺','🎻','🎧','🎵','🎙️','🔊','🎛️','🎚️','🎼','🔔','🎹'],channelColors=['#4c91d4','#e05b57','#d69b36','#58a879','#9a70c8','#d66eaa','#36aeb7','#8a9aa4','#d2c34a','#e0e5e8','#7a8791','#bd7650'];
 let editingChannel=0,holdTimer=null,gainHoldTimer=null,eqDragBand=-1;
 function metaFor(n){return channelMeta[n]||(channelMeta[n]={name:channelName(n),icon:(n>=0&&n<32)?'':'🎤',color:'#4c91d4'})}
+// Remove the old automatic microphone icon from input channels; custom icons remain untouched.
+for(let i=0;i<32;i++){if(channelMeta[i]&&channelMeta[i].icon==='🎤')channelMeta[i].icon=''}
+
 function startChannelHold(e,n){if(e.pointerType==='mouse'&&e.button!==0)return;endChannelHold();holdTimer=setTimeout(()=>{editingChannel=n;openChannelEditor(n)},550)}
 function endChannelHold(){clearTimeout(holdTimer);holdTimer=null}
 function openChannelEditor(n){let m=metaFor(n);document.getElementById('editChannelName').value=m.name;document.getElementById('channelIconChoices').innerHTML=channelIcons.map(ic=>'<button class="'+(m.icon===ic?'active':'')+'" onclick="chooseChannelIcon(\''+ic+'\',this)">'+ic+'</button>').join('');document.getElementById('channelColorChoices').innerHTML=channelColors.map(c=>'<button class="color-choice '+(m.color===c?'selected':'')+'" style="--swatch:'+c+'" onclick="chooseChannelColor(\''+c+'\',this)"></button>').join('');document.getElementById('channelEditModal').classList.add('show')}
