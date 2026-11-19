@@ -271,16 +271,16 @@ input.fader::-moz-range-thumb{
 <script>
 let inputNames=JSON.parse(localStorage.getItem('x32tp_input_names')||'null')||Array.from({length:32},(_,i)=>'CH '+(i+1));
 let bank=0,selected=0,taps=[],layers=JSON.parse(localStorage.getItem('x32tp_layers')||'null')||[{name:'FOH',channels:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]},{name:'VOCALS',channels:[12,13,14]},{name:'DRUMS',channels:[0,1,2,3,4,5,6]}],activeLayer=0;
-function channelName(n){if(n<32)return inputNames[n]||'CH '+(n+1);if(n<48)return 'AUX '+(n-31);if(n<64)return n<56?'BUS '+(n-39):'DCA '+(n-55);return 'MAIN'}
+function channelName(n){if(n<32)return inputNames[n]||'CH '+(n+1);if(n>=32&&n<38)return 'AUX '+(n-31);if(n>=40&&n<56)return 'BUS '+(n-39);if(n>=56&&n<64)return 'DCA '+(n-55);return 'MAIN'}
 function render(){
  let root=document.getElementById('channels');root.innerHTML='';
- let arr=Array.from({length:16},(_,i)=>bank+i);
+ let arr=bank===32?Array.from({length:6},(_,i)=>32+i):Array.from({length:16},(_,i)=>bank+i);
  if(bank>=56)arr=Array.from({length:8},(_,i)=>56+i).concat(Array.from({length:8},(_,i)=>64+i));
  arr.forEach((n,i)=>{
   let el=document.createElement('div');
   el.className='channel'+(selected===n?' selected':'');
   let nm=channelName(n), val=faderVals[n]??-5, meterLevel=18+((n*17)%63);
-  el.innerHTML=`<div class="ch-head" onclick="selectCh(${n})" ondblclick="openChannelConfig(${n});event.preventDefault() " title="Двойное нажатие — конфигурация канала"><div class="ch-num">${n<32?'CH '+String(n+1).padStart(2,'0'):n<48?'AUX '+String(n-31).padStart(2,'0'):n<64?'BUS '+String(n-39).padStart(2,'0'):'DCA / MAIN'}</div><div class="ch-name">${nm}</div></div>
+  el.innerHTML=`<div class="ch-head" onclick="selectCh(${n})" ondblclick="openChannelConfig(${n});event.preventDefault() " title="Двойное нажатие — конфигурация канала"><div class="ch-num">${n<32?'CH '+String(n+1).padStart(2,'0'):n>=32&&n<38?'AUX '+String(n-31).padStart(2,'0'):n>=40&&n<56?'BUS '+String(n-39).padStart(2,'0'):n<64?'DCA '+String(n-55).padStart(2,'0'):'MAIN'}</div><div class="ch-name">${nm}</div></div>
    <div class="meter"><i style="width:${meterLevel}%"></i></div>
    <div class="pan-mini">PAN · ${panVals[n]??(i%3===0?'L':i%3===1?'C':'R')}</div>
    <div class="fader-area"><div class="scale"><span>+10</span><span>0</span><span>−10</span><span>−20</span><span>−40</span><span>−∞</span></div>
