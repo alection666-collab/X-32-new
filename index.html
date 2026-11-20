@@ -558,6 +558,19 @@ button:focus-visible{outline:2px solid #ffd5a0!important;outline-offset:2px}
     font-size:8px;
   }
 }
+
+/* iPad landscape: compact 16-strip input bank */
+@media (orientation:landscape) and (min-width:768px) and (max-width:1400px){
+  #mixerView .channels{grid-template-columns:repeat(16,minmax(0,1fr)) !important;gap:2px !important}
+  #mixerView .channel{min-width:0!important;padding:3px 1px 4px!important}
+  #mixerView .ch-head{min-height:31px!important}
+  #mixerView .ch-num{font-size:7px!important}
+  #mixerView .ch-name{font-size:7px!important;line-height:1.1}
+  #mixerView .pan-mini{font-size:6px!important;white-space:nowrap}
+  #mixerView .fader-area{height:clamp(115px,43vh,310px)!important;min-height:115px!important}
+  #mixerView .db{font-size:6px!important}
+  #mixerView .ch-buttons button{min-height:22px!important;padding:2px 0!important;font-size:7px!important}
+}
 </style>
 </head>
 <body>
@@ -640,7 +653,7 @@ function render(){
  syncFaderLengths();
 }
 function syncFaderLengths(){document.querySelectorAll("#channels .fader-area").forEach(area=>{const slider=area.querySelector("input.fader");if(slider)slider.style.width=Math.max(105,area.clientHeight-22)+"px";});}
-window.addEventListener("resize",()=>requestAnimationFrame(syncFaderLengths));
+window.addEventListener("resize",()=>{requestAnimationFrame(()=>{render();syncFaderLengths()})});
 let faderVals=JSON.parse(localStorage.getItem('x32tp_faders')||'{}');
 let muteVals=JSON.parse(localStorage.getItem('x32tp_mutes')||'{}');
 let soloVals=JSON.parse(localStorage.getItem('x32tp_solos')||'{}');
