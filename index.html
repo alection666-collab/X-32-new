@@ -489,6 +489,17 @@ input,select,textarea,.edit-row input,.edit-row select{background:#29291f!import
 #channelPanel .channel-editor-head{background:#514e40!important}
 .toast{background:#e5ddc4!important;color:#29271f!important;border:1px solid #fff0c9!important;border-radius:3px!important}
 @media(max-width:650px){.xm-tabs button span{font-size:8px}.xm-banks button{font-size:8px}}
+
+/* X32 TOUCH PRO — illuminated button feedback */
+button{transition:background .12s,border-color .12s,box-shadow .12s,color .12s,filter .12s!important}
+button.active,button.on,button.x32-lit,[aria-pressed="true"]{
+ background:linear-gradient(180deg,#ff9ba0 0%,#f04e65 42%,#bd1738 100%)!important;
+ color:#fff!important;border-color:#ffc0c3!important;
+ box-shadow:0 0 4px #ff526b,0 0 13px #ff365caa,inset 0 1px 5px #fff9,inset 0 -3px 5px #780b25!important;
+ text-shadow:0 1px 2px #6c1024!important;
+}
+button:focus-visible{outline:2px solid #ffd5a0!important;outline-offset:2px}
+
 </style>
 </head>
 <body>
@@ -922,5 +933,19 @@ if('serviceWorker' in navigator && location.protocol==='https:'){
   }catch(err){console.warn('PWA service worker:',err)}
  });
 }
+
+/* X32-style illuminated feedback for every pressed control */
+document.addEventListener('click',function(ev){
+ const b=ev.target.closest('button');
+ if(!b)return;
+ requestAnimationFrame(()=>{
+  if(b.classList.contains('active')||b.classList.contains('on')||b.getAttribute('aria-pressed')==='true'){
+   b.classList.remove('x32-lit');
+  }else{
+   b.classList.toggle('x32-lit');
+  }
+ });
+},true);
+
 </script>
 </body></html>
