@@ -138,6 +138,13 @@ input.fader::-moz-range-thumb{
 .ch-buttons .solo.on{color:#181818;background:linear-gradient(#f3d45c,#9d791b);border-color:#ffe68a}
 @media (orientation:landscape){.ch-buttons{gap:2px}.ch-buttons button{height:23px;min-height:23px;font-size:11px;padding:1px 0}}
 
+/* Yamaha CL-style detailed fader scale: dB labels and fine graduation ticks */
+.mixer-fader-scale{left:3px!important;right:3px!important;top:7px!important;bottom:7px!important;display:block!important;z-index:1}
+.mixer-fader-scale span{position:absolute;left:0;min-width:18px;padding-right:2px;text-align:left;font:7px/1 Arial,sans-serif;color:#b9c2c5;text-shadow:0 1px 2px #000;transform:translateY(-50%)}
+.mixer-fader-scale span:after{content:"";position:absolute;left:100%;top:50%;width:5px;height:1px;background:#849197;opacity:.9}
+.mixer-fader-scale span:nth-child(odd):after{width:8px;background:#c0c9cc}
+.mixer-fader-scale .scale-bottom{top:auto!important;transform:none}
+.mixer-fader-scale .scale-bottom:after{top:50%}
 /* Yamaha CL-style physical fader recreation */
 .channel{
  background:linear-gradient(180deg,#252b2e 0%,#171c1f 100%);
@@ -693,7 +700,7 @@ function render(){
   el.innerHTML=`<div class="ch-head" onpointerdown="startChannelHold(event,${n})" onpointerup="endChannelHold()" onpointerleave="endChannelHold()" onpointercancel="endChannelHold()" onclick="handleChannelTap(${n},event)" title="Удержание — имя, иконка и цвет"><div class="ch-num">${n<32?'CH '+String(n+1).padStart(2,'0'):n>=32&&n<38?'AUX '+String(n-31).padStart(2,'0'):n>=40&&n<56?'BUS '+String(n-39).padStart(2,'0'):n<64?'DCA '+String(n-55).padStart(2,'0'):n<72?'FX RET '+String(n-63).padStart(2,'0'):n===72?'MAIN L':n===73?'MAIN R':n===74?'MONO/C':'MATRIX '+String(n-74).padStart(2,'0')}</div><div class="ch-name" style="--channel-color:${meta.color}">${nm}</div>${meta.icon?`<div class="ch-icon">${meta.icon}</div>`:""}</div>
    
    <div class="pan-mini">PAN · ${panVals[n]??'C'}</div>
-   <div class="fader-area"><div class="scale mixer-fader-scale"><span style="top:0">+10</span><span style="top:20%">0</span><span style="top:41%">−10</span><span style="top:61%">−20</span><span style="top:82%">−40</span><span style="bottom:0">−∞</span></div>
+   <div class="fader-area"><div class="scale mixer-fader-scale"><span style="top:0">+10</span><span style="top:10%">+5</span><span style="top:20%">0</span><span style="top:30.5%">−5</span><span style="top:41%">−10</span><span style="top:50.5%">−15</span><span style="top:61%">−20</span><span style="top:71.5%">−30</span><span style="top:82%">−40</span><span style="top:91%">−60</span><span class="scale-bottom" style="bottom:0">−∞</span></div>
    <input aria-label="${nm} fader" class="fader" type="range" min="0" max="100" step="0.1" value="${dbToFaderPos(val)}" oninput="const v=faderPosToDb(this.value);if(sendsMode&&${n}<32){sendLevels[selectedSendBus+':'+${n}]=v;localStorage.setItem('x32tp_send_levels',JSON.stringify(sendLevels))}else{faderVals[${n}]=v;localStorage.setItem('x32tp_faders',JSON.stringify(faderVals))}this.parentNode.nextElementSibling.textContent=(v>0?'+':'')+v.toFixed(1)+' dB'"></div>
    <div class="db">${val>0?'+':''}${Number(val).toFixed(1)} dB</div>
    <div class="ch-buttons"><button class="mute ${muteVals[n]?'on':''}" aria-label="MUTE" title="MUTE" onclick="toggleStrip(${n},'mute',this);event.stopPropagation()">M</button><button class="solo ${soloVals[n]?'on':''}" aria-label="SOLO" title="SOLO" onclick="toggleStrip(${n},'solo',this);event.stopPropagation()">S</button></div>
