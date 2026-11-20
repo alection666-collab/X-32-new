@@ -277,8 +277,27 @@ input.fader::-moz-range-thumb{
 }
 .channel-editor-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.channel-actions,.channel-tabs{display:flex;gap:6px;flex-wrap:wrap}.channel-tabs{border-bottom:1px solid #40515e;padding-bottom:10px;margin-bottom:12px}.channel-tabs button,.channel-actions button{font-size:10px}.channel-page{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.channel-control{background:linear-gradient(#202c35,#0d151c);border:1px solid #3b4c57;border-radius:8px;padding:11px;min-width:0}.channel-control label{display:block;color:#aab9c2;font-size:10px;font-weight:800;margin-bottom:7px}.channel-control output{display:block;color:#58d7e1;font:700 17px ui-monospace,monospace;margin-bottom:7px}.channel-control input{width:100%;accent-color:#35c6d4}.channel-control .unit{font-size:10px;color:#82939e}.channel-control .toggle-line{display:flex;justify-content:space-between;align-items:center;gap:8px}.channel-control button{font-size:10px}.eq-band{border-top:3px solid #438ac4}@media(max-width:700px){.channel-page{grid-template-columns:repeat(2,minmax(0,1fr))}.channel-editor-head{align-items:flex-start;flex-direction:column}}
 
-/* DYN detail page */
-.dyn-wrap{display:grid;gap:12px}.dyn-head,.dyn-section{background:linear-gradient(145deg,#1b2933,#0d151c);border:1px solid #3b4d59;border-radius:10px;padding:12px}.dyn-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.dyn-head b{display:block;color:#5bd9e4;font-size:13px;letter-spacing:.08em}.dyn-head small{display:block;color:#8297a3;font-size:9px;margin-top:4px}.dyn-section-title{font-size:10px;font-weight:900;letter-spacing:.12em;color:#9aabb5;margin-bottom:10px}.dyn-select{background:linear-gradient(#202c35,#0d151c);border:1px solid #3b4c57;border-radius:8px;padding:11px;min-width:0}.dyn-select label{display:block;color:#aab9c2;font-size:10px;font-weight:800;margin-bottom:8px}.dyn-select select{width:100%;background:#101a22;color:#58d7e1;border:1px solid #465b68;border-radius:5px;padding:9px;font-weight:700}.dyn-extra{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:10px}.dyn-extra>button{background:#172630;color:#b8c9d2;border:1px solid #405563;border-radius:8px;padding:10px;font-size:10px;font-weight:800}.dyn-extra>button.active{color:#081519;background:#53d3dc;border-color:#53d3dc}.dyn-note{color:#82939e;font-size:10px;padding:2px 4px}@media(max-width:700px){.dyn-extra{grid-template-columns:repeat(2,minmax(0,1fr))}.dyn-head{align-items:flex-start;flex-direction:column}}
+/* DYN uses the same hardware-panel visual language as CONFIG */
+.dyn-wrap{display:flex;flex-direction:column;gap:12px;padding:12px;background:linear-gradient(135deg,#5a5745,#39382d);border:1px solid #9b906e;color:#f4efdc}
+.dyn-head,.dyn-section{background:transparent;border:0;border-radius:0;padding:8px 4px}
+.dyn-head{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #92896c}
+.dyn-head b{display:block;color:#f2ead1;font-size:13px;letter-spacing:.08em}
+.dyn-head small{display:block;color:#d4cbb1;font-size:9px;margin-top:4px}
+.dyn-section{border-bottom:1px solid #92896c}
+.dyn-section-title{font-size:10px;font-weight:900;letter-spacing:.12em;color:#f2ead1;margin-bottom:10px}
+.dyn-wrap .channel-control{background:#494738;border:1px solid #9d926e;border-radius:4px;padding:11px;min-width:0}
+.dyn-wrap .channel-control label,.dyn-wrap .dyn-select label{color:#f2ead1}
+.dyn-wrap .channel-control output{color:#fff1c5;font:800 14px ui-monospace,monospace}
+.dyn-wrap .channel-control input{accent-color:#e7d9ae}
+.dyn-wrap .channel-control .unit{color:#d4cbb1}
+.dyn-wrap .channel-control button,.dyn-wrap .dyn-extra>button{background:linear-gradient(#b8b5a7,#777466);border:1px solid #25251f;border-radius:4px;color:#171812;padding:9px 12px;font-size:10px;font-weight:900;box-shadow:inset 0 1px #fff8,0 2px 3px #17150f}
+.dyn-wrap .channel-control button.active,.dyn-wrap .dyn-extra>button.active{background:linear-gradient(#ffb4c2,#f03b68 55%,#bd1744);color:#fff;box-shadow:0 0 9px #ff527b,inset 0 1px #fff9}
+.dyn-select{background:#494738;border:1px solid #9d926e;border-radius:4px;padding:11px;min-width:0}
+.dyn-select label{display:block;font-size:10px;font-weight:900;margin-bottom:8px}
+.dyn-select select{width:100%;background:#29291f;color:#f6f0dc;border:1px solid #a69a75;padding:8px 10px;border-radius:3px;font-weight:800}
+.dyn-extra{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:10px}
+.dyn-note{color:#d4cbb1;font-size:10px;padding:8px 4px}
+@media(max-width:700px){.dyn-extra{grid-template-columns:repeat(2,minmax(0,1fr))}.dyn-head{align-items:flex-start;flex-direction:column}}
 
 /* CHANNEL STRIP v0.4 */
 .strip-overview{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:12px 0}
