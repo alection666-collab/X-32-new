@@ -687,6 +687,74 @@ input.fader::-moz-range-thumb{
  font-size:14px!important;padding:8px!important;
 }
 
+
+/* X32 TOUCH PRO — Classic Pro fader design, unified across mixer/channel/send views */
+.channel,
+.channel-fader-dock{
+ background:linear-gradient(180deg,#252b2e 0%,#171c1f 100%);
+ border-color:#50595d;
+}
+.channel .ch-head,
+.channel-fader-title{
+ background:linear-gradient(180deg,#090d10 0%,#20282c 52%,#0c1114 100%)!important;
+ border:1px solid #657078!important;
+ border-radius:4px!important;
+ box-shadow:inset 0 1px 2px #ffffff18,inset 0 0 8px #000b,0 2px 4px #0009!important;
+ color:#f1f3ef!important;
+}
+.channel .ch-head{position:relative}
+.channel .ch-head:after{
+ content:"";display:block;width:calc(100% - 8px);height:4px;flex:0 0 4px;
+ margin-top:5px;background:linear-gradient(90deg,#17649c,#42a5e8 50%,#17649c);
+ box-shadow:0 0 7px #279ce988;border-radius:3px;
+}
+.channel .ch-num{color:#aebbc0!important;text-shadow:0 1px 2px #000!important}
+.channel .ch-name{color:#f4f6f5!important;text-shadow:0 1px 3px #000!important}
+.channel-fader-title{
+ position:relative;min-height:64px;display:flex;align-items:center;justify-content:center;
+ padding:8px 7px 13px!important;font-size:14px!important;font-weight:800;
+}
+.channel-fader-title:after{
+ content:"";position:absolute;left:5px;right:5px;bottom:5px;height:4px;
+ background:linear-gradient(90deg,#17649c,#42a5e8 50%,#17649c);
+ box-shadow:0 0 7px #279ce988;border-radius:3px;
+}
+.fader-area,.channel-fader-area{
+ background:linear-gradient(90deg,#090d0f 0%,#252c2f 12%,#171d20 50%,#252c2f 88%,#090d0f 100%)!important;
+ border:1px solid #080c0e!important;border-radius:3px!important;
+ box-shadow:inset 0 0 9px #000,inset 0 1px #ffffff12!important;
+}
+.fader-area:before,.channel-fader-area:before{
+ width:8px!important;border-radius:5px!important;
+ background:linear-gradient(90deg,#050708,#465158 42%,#080b0d)!important;
+ border:1px solid #657078!important;
+}
+input.fader::-webkit-slider-runnable-track{
+ height:5px!important;background:linear-gradient(180deg,#080b0c,#657078 48%,#111719)!important;
+ border:1px solid #8a969a!important;border-radius:2px!important;
+}
+input.fader::-webkit-slider-thumb{
+ -webkit-appearance:none;width:38px!important;height:46px!important;margin-top:-21px!important;
+ border-radius:4px!important;
+ background:
+  linear-gradient(90deg,transparent 0 46%,#30383b 47%,#111719 49%,#111719 51%,#30383b 53%,transparent 54%),
+  linear-gradient(180deg,#f0f1eb 0%,#aeb7b5 13%,#e0e3dc 28%,#7d8989 49%,#d8dbd2 72%,#697477 100%)!important;
+ border:1px solid #e4e7e1!important;
+ box-shadow:0 3px 6px #000e,inset 0 1px 2px #fff,inset 0 -2px 3px #343b3c!important;
+}
+input.fader::-moz-range-track{
+ height:5px!important;background:linear-gradient(180deg,#080b0c,#657078 48%,#111719)!important;
+ border:1px solid #8a969a!important;border-radius:2px!important;
+}
+input.fader::-moz-range-thumb{
+ width:38px!important;height:46px!important;border-radius:4px!important;
+ background:
+  linear-gradient(90deg,transparent 0 46%,#30383b 47%,#111719 49%,#111719 51%,#30383b 53%,transparent 54%),
+  linear-gradient(180deg,#f0f1eb 0%,#aeb7b5 13%,#e0e3dc 28%,#7d8989 49%,#d8dbd2 72%,#697477 100%)!important;
+ border:1px solid #e4e7e1!important;box-shadow:0 3px 6px #000e,inset 0 1px 2px #fff!important;
+}
+.db{color:#e7e8df!important;text-shadow:0 1px 2px #000!important}
+
 </style>
 </head>
 <body>
