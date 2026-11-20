@@ -678,7 +678,7 @@ function render(){
   el.innerHTML=`<div class="ch-head" onpointerdown="startChannelHold(event,${n})" onpointerup="endChannelHold()" onpointerleave="endChannelHold()" onpointercancel="endChannelHold()" onclick="handleChannelTap(${n},event)" title="Удержание — имя, иконка и цвет"><div class="ch-num">${n<32?'CH '+String(n+1).padStart(2,'0'):n>=32&&n<38?'AUX '+String(n-31).padStart(2,'0'):n>=40&&n<56?'BUS '+String(n-39).padStart(2,'0'):n<64?'DCA '+String(n-55).padStart(2,'0'):n<72?'FX RET '+String(n-63).padStart(2,'0'):n===72?'MAIN L':n===73?'MAIN R':n===74?'MONO/C':'MATRIX '+String(n-74).padStart(2,'0')}</div><div class="ch-name" style="--channel-color:${meta.color}">${nm}</div>${meta.icon?`<div class="ch-icon">${meta.icon}</div>`:""}</div>
    
    <div class="pan-mini">PAN · ${panVals[n]??'C'}</div>
-   <div class="fader-area"><div class="meter meter-vertical" title="Уровень канала · DEMO"><i id="meter-${n}" style="height:${meterLevel}%"></i></div><div class="scale mixer-fader-scale"><span style="top:0">+10</span><span style="top:20%">0</span><span style="top:41%">−10</span><span style="top:61%">−20</span><span style="top:82%">−40</span><span style="bottom:0">−∞</span></div>
+   <div class="fader-area"><div class="scale mixer-fader-scale"><span style="top:0">+10</span><span style="top:20%">0</span><span style="top:41%">−10</span><span style="top:61%">−20</span><span style="top:82%">−40</span><span style="bottom:0">−∞</span></div>
    <input aria-label="${nm} fader" class="fader" type="range" min="0" max="100" step="0.1" value="${dbToFaderPos(val)}" oninput="const v=faderPosToDb(this.value);if(sendsMode&&${n}<32){sendLevels[selectedSendBus+':'+${n}]=v;localStorage.setItem('x32tp_send_levels',JSON.stringify(sendLevels))}else{faderVals[${n}]=v;localStorage.setItem('x32tp_faders',JSON.stringify(faderVals))}this.parentNode.nextElementSibling.textContent=(v>0?'+':'')+v.toFixed(1)+' dB'"></div>
    <div class="db">${val>0?'+':''}${Number(val).toFixed(1)} dB</div>
    <div class="ch-buttons"><button class="mute ${muteVals[n]?'on':''}" aria-label="MUTE" title="MUTE" onclick="toggleStrip(${n},'mute',this);event.stopPropagation()">M</button><button class="solo ${soloVals[n]?'on':''}" aria-label="SOLO" title="SOLO" onclick="toggleStrip(${n},'solo',this);event.stopPropagation()">S</button></div>
@@ -1001,18 +1001,7 @@ function eqPointerUp(e){
 }
 render();renderLayers();renderChannelPage();
 
-/* Independent simulated signal indication for every visible channel.
-   Replaced by real X32 meter data when OSC input is implemented. */
-function animateMeters(){
- document.querySelectorAll('.meter i').forEach((bar)=>{
-  const n=Number(bar.id.replace('meter-',''));
-  const level=8+Math.round(Math.random()*76);
-  bar.style.height=level+'%';
-  bar.classList.toggle('hot',level>=68&&level<88);
-  bar.classList.toggle('peak',level>=88);
- });
-}
-setInterval(animateMeters,280);
+/* Simulated channel meter animation removed. */
 
 
 /* Auto-adapt mixer layout after device rotation. */
