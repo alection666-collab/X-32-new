@@ -692,7 +692,7 @@ function render(){
  else if(bank===56)arr=Array.from({length:8},(_,i)=>56+i);
  else if(bank===64)arr=Array.from({length:8},(_,i)=>64+i);
  else if(bank===72)arr=Array.from({length:8},(_,i)=>72+i);
- else arr=Array.from({length:(bank<32&&window.matchMedia('(orientation:landscape) and (min-width:768px) and (max-width:1400px)').matches)?16:8},(_,i)=>bank+i);
+ else arr=Array.from({length:8},(_,i)=>bank+i);
  arr.forEach((n,i)=>{
   let el=document.createElement('div');
   el.className='channel'+(selected===n?' selected':'');
