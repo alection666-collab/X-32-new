@@ -572,61 +572,39 @@ button:focus-visible{outline:2px solid #ffd5a0!important;outline-offset:2px}
   #mixerView .ch-buttons button{min-height:22px!important;padding:2px 0!important;font-size:7px!important}
 }
 
-/* iPad edge-to-edge shell: fill the entire available landscape viewport */
+/* X32 console layout: 8 full-height strips + fixed left control bay.
+   Fader travel occupies the lower console area and reaches the bottom at -inf. */
 @media (orientation:landscape) and (min-width:768px){
-  html,body{
-    width:100% !important;
-    min-width:0 !important;
-    max-width:none !important;
-    height:100% !important;
-    min-height:100% !important;
-    margin:0 !important;
-    padding:0 !important;
-    overflow:hidden !important;
-  }
-  body{
-    height:100dvh !important;
-    min-height:100dvh !important;
-    display:flex !important;
-    flex-direction:column !important;
-    align-items:stretch !important;
-  }
-  header{
-    flex:0 0 auto !important;
-    width:100% !important;
-    max-width:none !important;
-    margin:0 !important;
-    padding-left:max(8px,env(safe-area-inset-left)) !important;
-    padding-right:max(8px,env(safe-area-inset-right)) !important;
-  }
-  main{
-    flex:1 1 0 !important;
-    width:100% !important;
-    max-width:none !important;
-    min-width:0 !important;
-    min-height:0 !important;
-    margin:0 !important;
-    padding-left:max(5px,env(safe-area-inset-left)) !important;
-    padding-right:max(5px,env(safe-area-inset-right)) !important;
-    padding-bottom:max(4px,env(safe-area-inset-bottom)) !important;
-    overflow:hidden !important;
-  }
-  .xm-home-layout{
-    width:100% !important;
-    max-width:none !important;
-    min-width:0 !important;
-    min-height:0 !important;
-    flex:1 1 0 !important;
-    align-items:stretch !important;
-  }
-  #mixerView{
-    width:0 !important;
-    max-width:none !important;
-    min-width:0 !important;
-    flex:1 1 0 !important;
-    height:100% !important;
-  }
-  #mixerView .channels{width:100% !important;min-width:0 !important}
+  html,body{width:100%!important;height:100%!important;min-height:100%!important;max-width:none!important;margin:0!important;overflow:hidden!important}
+  body{height:100dvh!important;display:flex!important;flex-direction:column!important;align-items:stretch!important}
+  header{flex:0 0 auto!important;width:100%!important;margin:0!important;padding-left:max(8px,env(safe-area-inset-left))!important;padding-right:max(8px,env(safe-area-inset-right))!important}
+  main{display:flex!important;flex:1 1 0!important;flex-direction:column!important;width:100%!important;max-width:none!important;min-width:0!important;min-height:0!important;margin:0!important;padding:5px  max(5px,env(safe-area-inset-right))  max(4px,env(safe-area-inset-bottom)) max(5px,env(safe-area-inset-left))!important;overflow:hidden!important}
+  .xm-home-layout{display:flex!important;flex:1 1 0!important;width:100%!important;min-width:0!important;min-height:0!important;gap:6px!important;align-items:stretch!important}
+  .xm-side{flex:0 0 clamp(76px,8vw,108px)!important;width:clamp(76px,8vw,108px)!important;height:100%!important;min-height:0!important;overflow:hidden!important}
+  #mixerView{display:flex!important;flex:1 1 0!important;width:0!important;min-width:0!important;max-width:none!important;height:100%!important;min-height:0!important;margin:0!important;padding:5px!important;overflow:hidden!important}
+  #mixerView .channels{display:grid!important;grid-template-columns:repeat(8,minmax(0,1fr))!important;grid-template-rows:minmax(0,1fr)!important;align-items:stretch!important;align-content:stretch!important;gap:5px!important;flex:1 1 0!important;width:100%!important;height:100%!important;min-width:0!important;min-height:0!important}
+  #mixerView .channel{display:flex!important;flex-direction:column!important;height:100%!important;min-width:0!important;min-height:0!important;padding:4px 3px!important}
+  #mixerView .ch-head{flex:0 0 40px!important;min-height:40px!important}
+  #mixerView .pan-mini{flex:0 0 16px!important}
+  #mixerView .fader-area{position:relative!important;display:block!important;flex:1 1 0!important;width:100%!important;height:auto!important;min-height:0!important;margin:2px 0 3px!important;overflow:hidden!important}
+  #mixerView input.fader{position:absolute!important;left:50%!important;top:50%!important;right:auto!important;bottom:auto!important;width:calc(100% - 22px)!important;max-width:none!important;height:30px!important;transform:translate(-50%,-50%) rotate(-90deg)!important;transform-origin:center!important}
+  #mixerView .scale{top:7px!important;bottom:7px!important}
+  #mixerView .db{flex:0 0 17px!important;height:17px!important}
+  #mixerView .ch-buttons{flex:0 0 27px!important}
+  #mixerView .ch-buttons button{height:24px!important;min-height:24px!important}
+  #mixerView .xm-footer{flex:0 0 auto!important}
+}
+/* Remove old 16-strip iPad overrides; retain eight strips on every screen. */
+@media (orientation:landscape) and (min-width:768px) and (max-width:1400px){
+  #mixerView .channels{grid-template-columns:repeat(8,minmax(0,1fr))!important;gap:5px!important}
+  #mixerView .channel{padding:4px 3px!important}
+  #mixerView .ch-head{min-height:40px!important}
+  #mixerView .ch-num{font-size:8px!important}
+  #mixerView .ch-name{font-size:clamp(8px,.9vw,11px)!important}
+  #mixerView .pan-mini{font-size:8px!important}
+  #mixerView .fader-area{height:auto!important;min-height:0!important}
+  #mixerView .db{font-size:8px!important}
+  #mixerView .ch-buttons button{min-height:24px!important;font-size:9px!important}
 }
 </style>
 </head>
