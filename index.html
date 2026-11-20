@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#111820">
 <link rel="manifest" href="/X-32-new/manifest.json">
 <link rel="icon" href="/X-32-new/icon.svg" type="image/svg+xml">
@@ -570,6 +570,63 @@ button:focus-visible{outline:2px solid #ffd5a0!important;outline-offset:2px}
   #mixerView .fader-area{height:clamp(115px,43vh,310px)!important;min-height:115px!important}
   #mixerView .db{font-size:6px!important}
   #mixerView .ch-buttons button{min-height:22px!important;padding:2px 0!important;font-size:7px!important}
+}
+
+/* iPad edge-to-edge shell: fill the entire available landscape viewport */
+@media (orientation:landscape) and (min-width:768px){
+  html,body{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+    height:100% !important;
+    min-height:100% !important;
+    margin:0 !important;
+    padding:0 !important;
+    overflow:hidden !important;
+  }
+  body{
+    height:100dvh !important;
+    min-height:100dvh !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:stretch !important;
+  }
+  header{
+    flex:0 0 auto !important;
+    width:100% !important;
+    max-width:none !important;
+    margin:0 !important;
+    padding-left:max(8px,env(safe-area-inset-left)) !important;
+    padding-right:max(8px,env(safe-area-inset-right)) !important;
+  }
+  main{
+    flex:1 1 0 !important;
+    width:100% !important;
+    max-width:none !important;
+    min-width:0 !important;
+    min-height:0 !important;
+    margin:0 !important;
+    padding-left:max(5px,env(safe-area-inset-left)) !important;
+    padding-right:max(5px,env(safe-area-inset-right)) !important;
+    padding-bottom:max(4px,env(safe-area-inset-bottom)) !important;
+    overflow:hidden !important;
+  }
+  .xm-home-layout{
+    width:100% !important;
+    max-width:none !important;
+    min-width:0 !important;
+    min-height:0 !important;
+    flex:1 1 0 !important;
+    align-items:stretch !important;
+  }
+  #mixerView{
+    width:0 !important;
+    max-width:none !important;
+    min-width:0 !important;
+    flex:1 1 0 !important;
+    height:100% !important;
+  }
+  #mixerView .channels{width:100% !important;min-width:0 !important}
 }
 </style>
 </head>
